@@ -1,670 +1,595 @@
----
-title: VoxaLab AI
-emoji: 🎤
-colorFrom: blue
-colorTo: purple
-sdk: docker
-app_file: app.py
-pinned: false
----
+# 🎤 VoxaLab AI - Interview & Math Coaching Platform
 
-# VoxaLab AI
+<div align="center">
 
-## Professional Interview Coaching Platform
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Python](https://img.shields.io/badge/Python-3.11%2B-green)
+![React](https://img.shields.io/badge/React-18.2%2B-61DAFB?logo=react)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.134%2B-009688?logo=fastapi)
+![Mistral AI](https://img.shields.io/badge/Mistral%20AI-Large%203-FF6B35)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-Powered by Mistral Large 3 AI for intelligent, real-time interview coaching. Practice your technical interview skills with instant feedback in 6 languages.
+**AI-Powered Coaching Platform for Technical Interviews & Mathematics Education**
 
----
+[🚀 Live Demo](#live-demo) • [📚 Features](#-features) • [🏗️ Architecture](#-architecture) • [⚡ Quick Start](#-quick-start)
 
-## Overview
-
-VoxaLab AI is a modern, full-stack application that provides personalized interview coaching through advanced AI analysis. Whether you prefer speaking or typing, the system captures your response, analyzes it with Mistral Large 3, and provides instant coaching feedback with actionable insights.
-
-## Core Features
-
-- Interview practice for 5 technical roles
-- Dual input methods (text typing and audio recording)
-- Real-time speech transcription
-- AI-powered coaching feedback with scoring
-- Audio playback of coach responses
-- Multi-language support (6 languages)
-- Professional analysis across key dimensions
+</div>
 
 ---
 
-## Technology Stack
+## 📋 Overview
 
-### Frontend
-- React 18.2 - User interface
-- Axios - HTTP communication
-- React Icons - Professional UI components
-- Web Audio API - Audio recording capability
-- Responsive CSS design
+**VoxaLab AI** is a comprehensive full-stack platform powered by **Mistral Large 3** that provides:
 
-### Backend
-- FastAPI - REST API framework
-- Mistral Large 3 - AI coaching engine
-- LangChain - Prompt orchestration
-- OpenAI Whisper - Speech recognition
-- ElevenLabs - Text-to-speech conversion
-- Uvicorn - ASGI production server
+✅ **Interview Coaching** - Real-time AI feedback for technical interview practice  
+✅ **Math Tutoring** - Step-by-step problem solving with validation  
+✅ **Multi-language Support** - Practice in 6+ languages  
+✅ **Real-time Feedback** - Instant analysis with visual loading state  
+✅ **Audio/Voice Integration** - Whisper transcription + ElevenLabs voice synthesis  
 
 ---
 
-## Quick Start
+## ✨ Key Features
 
-### Prerequisites
-- Python 3.10 or later
-- Node.js 16 or later
-- npm package manager
+### 1. Interview Coaching System
 
-### Installation
+#### Core Capabilities
+- **5 Professional Roles** - Backend, Frontend, DevOps, Data Scientist, Product Manager
+- **40+ Role-Specific Questions** - Carefully researched technical questions
+- **Dual Input Methods**:
+  - 🎤 **Voice Recording** - Real-time audio capture with Whisper transcription
+  - ⌨️ **Text Typing** - Manual answer entry
+- **Real-time Transcription** - OpenAI Whisper converts speech to text instantly
 
-1. Clone repository
-```bash
-git clone <repository-url>
-cd voicecoach-ai
+#### AI Coaching Features
+- **Performance Scoring** (0-100)
+  - 📊 Clarity Score (0-10) - Communication clarity and pacing
+  - 📊 Structure Score (0-10) - Logical flow and organization
+  - 📊 Impact Score (0-10) - Quantified results and business value
+- **Detailed Feedback**
+  - ✅ **Strengths** - What you did well
+  - 📈 **Improvements** - Actionable areas to work on
+  - 💡 **Coaching Tips** - Personalized recommendations
+  - 🎯 **STAR Analysis** - Situation, Task, Action, Result evaluation
+  - 🎤 **Voice Feedback** - Hear tips spoken naturally
+
+#### Session Management
+- **Session Reports** - Comprehensive analysis after completing interview
+- **Performance Metrics** - Average scores, question-by-question breakdown
+- **Real-time UI State** - "🤖 Analyzing..." spinner during processing
+- **Score Breakdown Visualization** - Progress bars for Clarity, Structure, Impact
+
+### 2. Math Tutoring System
+
+#### Features
+- **Problem Analysis** - Classify type, difficulty, and required concepts
+- **Step Validation** - Verify each solving step is correct
+- **Solution Generation** - LaTeX-formatted complete solutions
+- **Practice Problems** - Generate similar problems for practice
+- **3-Phase Workflow**:
+  1. **Input Problem** - Enter mathematical problem
+  2. **Solve & Validate** - Work through steps with validation
+  3. **Review Solution** - See complete solution with explanations
+
+#### Supported Topics
+- Linear Algebra, Calculus, Probability & Statistics
+- Discrete Mathematics, Physics, Chemistry
+- And many more...
+
+### 3. Advanced UI/UX
+
+#### Real-time Feedback Display
+- **Analyzing State** - Animated spinner shows "🤖 Analyzing Your Response..."
+- **Instant Results** - Feedback appears immediately after analysis
+- **Visual Score Bars** - Progress bars show Clarity, Structure, Impact
+- **Formatted Lists** - Strengths and improvements displayed clearly
+- **Voice Feedback** - "Hear Coach Voice" button plays audio
+
+#### Responsive Design
+- 📱 Mobile-friendly interface
+- 🌙 Dark theme with professional aesthetics
+- ✨ Smooth animations and transitions
+- ♿ Accessible keyboard navigation
+
+### 4. Multi-Language Support
+- 🇬🇧 English
+- 🇫🇷 Français
+- 🇪🇸 Español
+- 🇩🇪 Deutsch
+- 🇨🇳 中文
+- 🇯🇵 日本語
+
+---
+
+## 🏗️ Architecture
+
+### System Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    VoxaLab AI Platform                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                               │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │           Frontend (React 18.2)                       │   │
+│  │  Landing | Interview Coach | Math Tutor | Reports    │   │
+│  │  - Audio Recording (Web Audio API)                   │   │
+│  │  - Real-time Analyzing State with spinner            │   │
+│  │  - Feedback with scores & lists                      │   │
+│  │  - LaTeX Math Rendering                              │   │
+│  │  - Dark theme animations                             │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                    ↓ (Axios HTTP)                            │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │        Backend (FastAPI + Uvicorn)                   │   │
+│  │  ┌─────────────────────────────────────────────────┐ │   │
+│  │  │ API Routers (25+ endpoints)                    │ │   │
+│  │  │ ├── /session - Session management             │ │   │
+│  │  │ ├── /analysis - Audio & text analysis         │ │   │
+│  │  │ ├── /report - Reports                         │ │   │
+│  │  │ ├── /tts - Text-to-speech                     │ │   │
+│  │  │ └── /math - Math tutor                        │ │   │
+│  │  └─────────────────────────────────────────────────┘ │   │
+│  │  ┌─────────────────────────────────────────────────┐ │   │
+│  │  │ Core Services                                  │ │   │
+│  │  │ ├── Mistral Service (LLM coaching)            │ │   │
+│  │  │ ├── Math Tutor Service                        │ │   │
+│  │  │ ├── Scoring Engine                            │ │   │
+│  │  │ ├── Voxtral Service (Transcription)           │ │   │
+│  │  │ └── TTS Service (Voice synthesis)             │ │   │
+│  │  └─────────────────────────────────────────────────┘ │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                     ↓                                         │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │       External AI & Services                        │   │
+│  │  • Mistral Large 3 (AI coaching engine)            │   │
+│  │  • OpenAI Whisper (Speech-to-text)                 │   │
+│  │  • ElevenLabs (Text-to-speech)                     │   │
+│  │  • LangChain (Prompt orchestration)                │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                               │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-2. Backend setup
+### Data Flow: Interview Coaching
+
+```
+1. User Input (Voice/Text)
+        ↓
+2. Frontend Records Audio / Accepts Text
+        ↓
+3. POST /session/answer {question, answer, role, language}
+        ↓
+4. Backend: Transcribe (if audio) + Analyze
+        ↓
+5. Mistral AI: Generate Coaching Feedback
+        ↓
+6. Response: {
+     score: 78/100,
+     feedback: "Good Response",
+     tips: "Add specific metrics...",
+     strengths: ["Clear", "Good structure"],
+     improvements: ["Add examples"],
+     clarity_score: 8,
+     structure_score: 7,
+     impact_score: 8
+   }
+        ↓
+7. Frontend: Show "🤖 Analyzing..." for 2-5 seconds
+        ↓
+8. Display Complete Feedback Panel:
+   - Score circle (78/100)
+   - Coaching tips
+   - Strengths list
+   - Improvements list
+   - Score bars (Clarity, Structure, Impact)
+   - Voice button + Next Question
+```
+
+### Component Architecture
+
+**Frontend:**
+```
+App.js (Main Container - 849 lines)
+├── Landing Page
+├── Interview Coach
+│   ├── Role Selection
+│   ├── Question Display
+│   ├── Input Method Selector (Voice/Text)
+│   ├── Recording Component
+│   ├── Analyzing State (Loading with spinner)
+│   ├── Feedback Panel (Score + Details)
+│   └── Navigation
+├── Math Tutor (MathTutor.js - 399 lines)
+├── About Page
+└── Report Page
+
+App.css (2500+ lines)
+├── Dark theme variables
+├── Component styling
+├── Animations & transitions
+├── Responsive breakpoints
+└── Accessibility rules
+```
+
+**Backend:**
+```
+main.py / app.py (Entry point)
+├── Router Registration
+│   ├── /session
+│   ├── /analysis
+│   ├── /report
+│   ├── /tts
+│   └── /math
+│
+├── Services
+│   ├── mistral_service.py (547 lines)
+│   │   └── generate_coaching_feedback()
+│   ├── math_tutor.py (361 lines)
+│   ├── scoring_engine.py (200+ lines)
+│   ├── voxtral_service.py (100+ lines)
+│   └── tts_service.py (80 lines)
+│
+└── Error Handling & Logging
+```
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| React | 18.2.0 | UI Framework |
+| Axios | 1.6.0+ | HTTP Client |
+| React Icons | Latest | UI Components |
+| Web Audio API | Native | Audio Recording |
+| MathJax | Latest | LaTeX Rendering |
+| CSS3 | Native | Styling & Animations |
+
+### Backend
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| FastAPI | 0.134.0+ | REST API |
+| Pydantic | 2.11.7+ | Data Validation |
+| Uvicorn | 0.25.0+ | ASGI Server |
+| Python | 3.11+ | Language |
+| AsyncIO | Native | Async Operations |
+
+### AI & ML
+| Technology | Purpose |
+|-----------|---------|
+| Mistral Large 3 | LLM Coaching Engine |
+| LangChain | Prompt Orchestration |
+| OpenAI Whisper | Speech-to-Text |
+| ElevenLabs | Text-to-Speech |
+
+### Deployment
+| Technology | Purpose |
+|-----------|---------|
+| Docker | Containerization |
+| HuggingFace Spaces | Production Deployment |
+| Git/GitHub | Version Control |
+
+---
+
+## 🚀 Quick Start
+
+### 1-Minute: Live Demo
+Visit: https://huggingface.co/spaces/mistral-hackaton-2026/voxalab
+
+### 5-Minute: Local Setup
+
+#### Prerequisites
+```bash
+python --version      # Must be 3.10+
+node --version        # Must be 16+
+```
+
+#### Step 1: Clone
+```bash
+git clone https://github.com/idrissbado/VoxaLabs.git
+cd VoxaLabs
+```
+
+#### Step 2: Backend Setup
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-3. Frontend setup
+#### Step 3: Frontend Setup
 ```bash
-cd frontend
+cd ../frontend
 npm install
 ```
 
-4. Environment configuration
-Create `.env` file in backend directory:
+#### Step 4: Configure
+Create `backend/.env`:
 ```
-MISTRAL_API_KEY=your-mistral-api-key
-ELEVENLABS_API_KEY=your-elevenlabs-api-key
+MISTRAL_API_KEY=your-key-from-console.mistral.ai
+ELEVENLABS_API_KEY=your-elevenlabs-key
 HOST=0.0.0.0
 PORT=8000
-ENV=production
+ENV=development
 ```
 
-### Running the Application
+#### Step 5: Run
 
-Terminal 1 - Backend:
+**Terminal 1:**
 ```bash
 cd backend
 python main.py
+# Runs on http://localhost:8000
 ```
 
-Terminal 2 - Frontend:
+**Terminal 2:**
 ```bash
 cd frontend
 npm start
+# Runs on http://localhost:3000
 ```
 
-Open http://localhost:3000 in your browser
+Open: http://localhost:3000 ✅
 
 ---
 
-## Usage Guide
+## 📚 Full Documentation
 
-### Step 1: Select Your Role
-Choose from five technical positions:
-- Backend Engineer (Spring Boot, Microservices)
-- Frontend Engineer (React, Performance Optimization)
-- DevOps Engineer (CI/CD, Infrastructure)
-- Data Scientist (Machine Learning, Statistics)
-- Product Manager (Strategy, User Focus)
+### Installation Guide
+See detailed setup in [ARCHITECTURE.md](ARCHITECTURE.md)
 
-Select your preferred language from 6 options.
+### Usage Guide
 
-### Step 2: Respond to Questions
-For each question, choose your input method:
+#### Interview Coaching
+1. Select Role (Backend Engineer, Frontend, etc.)
+2. Select Language
+3. Answer questions via voice or text
+4. Get instant AI feedback
+5. View performance report
 
-**Text Input**
-- Click the text input section
-- Write your response in the textarea
-- Click "Get Feedback"
+#### Math Tutoring
+1. Enter mathematical problem
+2. System analyzes and provides hints
+3. Solve step-by-step
+4. View complete solution
 
-**Audio Recording**
-- Click the recording section
-- Click "Start Recording"
-- Speak your response clearly
-- Click "Stop Recording"
-- Click "Get Feedback"
+### API Endpoints
 
-### Step 3: Review Feedback
-The system provides:
-- Your transcribed response (for audio input)
-- Personalized coaching feedback
-- Clarity score (0 to 10)
-- Depth score (0 to 10)
-- Communication score (0 to 10)
-- Audio playback of feedback
+**Session Management**
+```
+GET    /session/questions?role=backend&language=en
+POST   /session/answer {question, user_answer, language, role}
+```
 
-### Step 4: Navigate Questions
-- Use "Next Question" to continue
-- Use "Previous" to review earlier questions
-- Click "Finish" to complete the interview
+**Analysis**
+```
+POST   /analysis/transcribe {audio_data}
+POST   /analysis/feedback {question, answer}
+```
 
-### Step 5: View Results
-Access your session report showing:
-- All responses and feedback
-- Performance scores
-- Key insights
-- Improvement recommendations
+**Math Tutor**
+```
+POST   /math/analyze {problem}
+POST   /math/validate-step {problem, step}
+POST   /math/generate-solution {problem}
+```
+
+**Full API Docs**: http://localhost:8000/docs (Swagger UI)
 
 ---
 
-## API Endpoints
-
-### Session Management
-- `POST /session/create` - Start new coaching session
-- `GET /session/{session_id}` - Retrieve session details
-- `GET /session/questions` - Get questions for role and language
-
-### Analysis
-- `POST /analysis/audio` - Transcribe and analyze audio
-- `POST /analysis/feedback` - Analyze text answer
-
-### Text-to-Speech
-- `POST /tts/speak` - Convert coaching feedback to audio
-- `GET /tts/voices` - Get available voices
-
-### Reports
-- `GET /report/{session_id}` - Generate session report
-
----
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-voicecoach-ai/
-├── backend/
-│   ├── main.py
-│   ├── requirements.txt
-│   ├── routers/
-│   │   ├── session.py
-│   │   ├── analysis.py
-│   │   ├── report.py
-│   │   └── tts.py
-│   └── services/
-│       ├── voxtral_service.py
-│       ├── mistral_service.py
-│       ├── tts_service.py
-│       └── scoring_engine.py
+VoxaLabs/
 ├── frontend/
 │   ├── src/
-│   │   ├── App.js
-│   │   ├── App.css
+│   │   ├── App.js (849 lines - Main React component)
+│   │   ├── MathTutor.js (399 lines - Math interface)
+│   │   ├── App.css (2500+ lines - Styling)
 │   │   └── index.html
-│   ├── package.json
-│   └── public/
-└── docker-compose.yml
+│   ├── build/ (Production build)
+│   │   └── static/
+│   │       ├── js/main.2e73ceaf.js (70.48 kB gzipped)
+│   │       └── css/main.c8080534.css (6.67 kB gzipped)
+│   └── package.json
+│
+├── backend/
+│   ├── main.py (FastAPI app)
+│   ├── app.py (HF Spaces entry point)
+│   ├── requirements.txt (All dependencies)
+│   ├── routers/
+│   │   ├── session.py (Session management)
+│   │   ├── analysis.py (Audio/text analysis)
+│   │   ├── report.py (Reports)
+│   │   ├── tts.py (Text-to-speech)
+│   │   └── math_tutor.py (Math endpoints)
+│   └── services/
+│       ├── mistral_service.py (LLM integration)
+│       ├── math_tutor.py (Math logic)
+│       ├── scoring_engine.py (Scoring)
+│       ├── voxtral_service.py (Transcription)
+│       └── tts_service.py (Voice synthesis)
+│
+├── README.md (This file)
+├── ARCHITECTURE.md (Technical docs)
+└── DEPLOY.md (Deployment guide)
 ```
 
 ---
 
-## Technical Roles
-
-1. **Backend Engineer**
-   - Focus on system design and scalability
-   - Technologies: Java, Spring Boot, microservices
-   - Questions on architecture, databases, APIs
-
-2. **Frontend Engineer**
-   - Focus on UI/UX and performance
-   - Technologies: React, TypeScript, CSS
-   - Questions on components, state management
-
-3. **DevOps Engineer**
-   - Focus on infrastructure and deployment
-   - Technologies: Docker, Kubernetes, CI/CD
-   - Questions on automation and reliability
-
-4. **Data Scientist**
-   - Focus on machine learning and statistics
-   - Technologies: Python, TensorFlow, scikit-learn
-   - Questions on models and data analysis
-
-5. **Product Manager**
-   - Focus on strategy and user impact
-   - Technologies: Product thinking, metrics
-   - Questions on vision and prioritization
-
----
-
-## Supported Languages
-
-- English
-- French
-- Spanish
-- German
-- Chinese
-- Japanese
-
----
-
-## Deployment
-
-### Local Development
-```bash
-python main.py        # Backend runs on port 8000
-npm start              # Frontend runs on port 3000
-```
-
-### Docker
-```bash
-docker-compose up     # Starts both backend and frontend
-```
-
-### Production
-Set environment variables and run:
-```bash
-cd backend
-python main.py
-```
-
----
-
-## Configuration
+## ⚙️ Configuration
 
 ### Environment Variables
 
-Create `.env` file in backend directory:
+Create `backend/.env`:
 
+```bash
+# Required
+MISTRAL_API_KEY=your-36-char-key
+
+# Optional
+ELEVENLABS_API_KEY=your-elevenlabs-key
+HOST=0.0.0.0
+PORT=8000
+ENV=production
+LOG_LEVEL=INFO
+DEBUG=false
 ```
-MISTRAL_API_KEY         Your Mistral AI API key
-ELEVENLABS_API_KEY      Your ElevenLabs TTS API key
-HOST                    Server host (default: 0.0.0.0)
-PORT                    Server port (default: 8000)
-ENV                     Environment type (development or production)
+
+### Get API Keys
+
+- **Mistral**: https://console.mistral.ai (Free tier available)
+- **ElevenLabs**: https://elevenlabs.io (Optional, for voice feedback)
+
+---
+
+## 🚀 Deployment
+
+### Option 1: HuggingFace Spaces (Recommended)
+
+Already live at: https://huggingface.co/spaces/mistral-hackaton-2026/voxalab
+
+**To deploy your own:**
+1. Fork repo on GitHub
+2. Create HF Space
+3. Connect to GitHub fork
+4. Set MISTRAL_API_KEY secret
+5. Deploy automatically ✅
+
+### Option 2: Docker
+
+```bash
+docker build -t voicecoach-backend ./backend
+docker run -e MISTRAL_API_KEY=$KEY -p 8000:8000 voicecoach-backend
+```
+
+### Option 3: Traditional Server
+
+```bash
+# Backend
+cd backend && pip install -r requirements.txt
+gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
+
+# Frontend
+cd frontend && npm run build && serve -s build -l 3000
 ```
 
 ---
 
-## Troubleshooting
+## 🐛 Troubleshooting
 
 ### Backend Issues
 
-**Backend fails to start**
-- Check Python version: `python --version` requires 3.10 or later
-- Install dependencies: `pip install -r requirements.txt`
-- Verify .env file contains MISTRAL_API_KEY
+**"RuntimeError: Directory not found"**
+```bash
+cd frontend && npm run build
+git add -f frontend/build/static && git push
+```
 
-**API errors**
-- Confirm server runs: `curl http://localhost:8000/docs`
-- Check error logs for details
-- Verify all environment variables are set
+**"MISTRAL_API_KEY not found"**
+- Create `.env` file in backend directory
+- Add: `MISTRAL_API_KEY=your-key`
+- Restart server
+
+**"Whisper import failed"**
+```bash
+pip install openai-whisper torch torchaudio
+python main.py  # First run takes 1-2 min
+```
 
 ### Frontend Issues
 
-**Frontend fails to start**
-- Clear cache: `rm -rf node_modules && npm install`
-- Check Node version: `node --version` requires 16 or later
-- Try: `npm start --reset-cache`
-
-**No audio playback**
-- Verify ELEVENLABS_API_KEY is set
-- Check browser microphone permissions
-- Review browser console for errors
-
-**Transcription not working**
-- First run downloads Whisper model (1GB file)
-- Wait 10-15 seconds for initial transcription
-- Check microphone permissions in browser
-
-### Reset Everything
-
+**"Module not found"**
 ```bash
 cd frontend
 rm -rf node_modules package-lock.json
-npm install
-npm start
-
-cd ../backend
-pip install --upgrade -r requirements.txt
-python main.py
+npm install && npm start
 ```
 
----
-
-## API Documentation
-
-Full OpenAPI documentation available at:
-
-```
-http://localhost:8000/docs
-```
-
-Interactive API testing available at:
-
-```
-http://localhost:8000/redoc
-```
-
----
-
-## Performance
-
-Typical response times:
-
-- Audio recording: Real-time
-- Speech transcription: 2-15 seconds
-- AI coaching analysis: 5-8 seconds
-- Audio synthesis: 3-5 seconds
-- End-to-end response: 20-30 seconds
-
----
-
-## Architecture Overview
-
-The application follows clean separation of concerns:
-
-**Frontend Layer**
-- React components for user interface
-- Axios for API communication
-- React Icons for professional UI
-
-**API Layer**
-- FastAPI router pattern for organization
-- Pydantic models for input validation
-- Structured error responses
-
-**Service Layer**
-- Mistral AI integration for coaching
-- LangChain for prompt orchestration
-- Audio processing with Whisper and ElevenLabs
-
-**Data Layer**
-- Session state management
-- Question scoring engine
-- User response analysis
-
----
-
-## Security
-
-- API keys stored in environment variables
-- CORS configuration for frontend access
-- Input validation on all endpoints
-- Error messages hide sensitive information
-- Rate limiting ready for production use
-
----
-
-## Future Enhancements
-
-- User authentication and account profiles
-- Historical session tracking and analytics
-- Custom question sets and practice modes
-- Voice quality selection options
-- Real-time performance visualization
-- Interview report export functionality
-- Interview comparison across multiple attempts
-
----
-
-## Contributing
-
-To contribute to VoxaLab AI:
-
-1. Create a feature branch
-2. Implement your changes
-3. Test thoroughly
-4. Submit a pull request for review
-
----
-
-## Support
-
-For issues or questions:
-
-- Review the troubleshooting section
-- Check API documentation at http://localhost:8000/docs
-- Review application logs for error details
-
----
-
-## Version
-
-Current Version: 1.0.0
-
----
-
-## Credits
-
-Built with:
-- Mistral Large 3 for intelligent coaching
-- FastAPI for robust API design
-- React for modern user interface
-- OpenAI Whisper for accurate transcription
-- ElevenLabs for natural voice synthesis
-npm install
-npm start
-```
-
-Frontend will start at `http://localhost:3000`
-
-### 3. Access the Application
-
-Open `http://localhost:3000` in your browser.
-
----
-
-## Usage
-
-1. **Select a Role** - Choose from 5 career paths
-2. **Practice Interview** - Answer 5 role-specific questions
-3. **Record or Type** - Use microphone or text input
-4. **Get Coaching** - Receive instant AI feedback with scores
-5. **Review Report** - See comprehensive performance analysis
-
----
-
-## Features in Detail
-
-### AI Coaching Feedback
-Every answer receives detailed analysis:
-
-- **Clarity Score (1-10)** - Communication clarity and pacing
-- **Structure Score (1-10)** - Logical flow and STAR method usage
-- **Impact Score (1-10)** - Quantified results and business value
-- **Filler Words** - "um", "like", "you know" detection
-- **STAR Analysis** - Situation, Task, Action, Result breakdown
-- **Coaching Tips** - Specific, actionable recommendations
-
-### Role-Specific Questions
-Five carefully researched career paths:
-
-- **Software Engineer** (8 questions) - System design, debugging, code quality
-- **Product Manager** (8 questions) - Strategy, metrics, prioritization
-- **Designer** (8 questions) - UX principles, design thinking, collaboration
-- **Data Scientist** (8 questions) - Analysis, modeling, insights
-- **Marketing** (8 questions) - Strategy, growth, metrics
-
-### Performance Reports
-Comprehensive session analysis including:
-
-- Executive summary of performance
-- Top strengths demonstrated
-- Critical improvement areas
-- Role-specific recommendations
-- Estimated interview readiness percentage
-- Actionable next steps
-
----
-
-## Technology Stack
-
-**Frontend:**
-- React 18.2.0 (SPA with hooks)
-- Axios (HTTP client)
-- Web Audio API (browser recording)
-- CSS3 (production animations)
-
-**Backend:**
-- FastAPI 0.134.0 (async framework)
-- Pydantic 2.11.7 (data validation)
-- Mistral Large 3 (LLM)
-- LangChain 0.1+ (orchestration)
-
-**Infrastructure:**
-- REST API architecture
-- Stateless async design
-- Ready for Docker deployment
-
----
-
-## Architecture
-
-See [ARCHITECTURE.md](ARCHITECTURE.md) for comprehensive technical documentation including:
-- System design and data flow
-- Component breakdowns
-- LangChain integration details
-- Deployment strategies
-- Future roadmap
-
----
-
-## API Endpoints
-
-### Session Management
-```
-POST   /session/create              - Start new practice session
-GET    /session/{id}                - Get session details
-POST   /session/{id}/next           - Move to next question
-```
-
-### Answer Analysis
-```
-POST   /analysis/text               - Analyze typed answer
-POST   /analysis/audio              - Transcribe and analyze voice
-POST   /analysis/improved-answer    - Generate improved example
-```
-
-### Reporting
-```
-POST   /report/generate             - Create session report
-GET    /report/{id}                 - Retrieve saved report
-```
-
-### Health
-```
-GET    /health                      - Service health check
-```
-
-Full OpenAPI docs at `http://localhost:8000/docs`
-
----
-
-## Deployment
-
-### Railway (Recommended for Quick Deploy)
+**"Port 3000 already in use"**
 ```bash
-railway login
-railway up
+# Change port or kill process
+npm start -- --port 3001
 ```
 
-### Docker
-```bash
-# Backend
-docker build -t voicecoach-api ./backend
-docker run -e MISTRAL_API_KEY=$KEY -p 8000:8000 voicecoach-api
+---
 
-# Frontend  
-docker build -t voicecoach-app ./frontend
-docker run -p 3000:3000 voicecoach-app
-```
+## 📊 Performance
 
-See [DEPLOY.md](DEPLOY.md) for detailed deployment procedures.
+| Operation | Time | Notes |
+|-----------|------|-------|
+| Audio Recording | Real-time | Browser-based |
+| Speech-to-Text | 2-5s | First: 10-15s (model load) |
+| AI Analysis | 5-8s | Mistral API |
+| Voice Synthesis | 3-5s | ElevenLabs |
+| **Total Response** | **15-25s** | End-to-end |
+
+**Build Sizes:**
+- Frontend JS: 70.48 kB (gzipped)
+- Frontend CSS: 6.67 kB (gzipped)
+- Total: ~77 kB
 
 ---
 
-## Key Innovation Points
-
-1. **LangChain Integration** - Structured prompt management and chains for consistent AI output
-2. **Dual Input Modality** - Both voice and text support for accessibility
-3. **STAR Method Validation** - Automatic detection of structured interview answers
-4. **Filler Word Analysis** - Real-time communication pattern detection
-5. **Production UI** - Beautiful, responsive interface with smooth animations
-6. **Async Architecture** - Non-blocking I/O for high performance
-7. **Graceful Fallbacks** - System continues functioning if any component fails
-
----
-
-## Performance
-
-- **API Response Time**: < 500ms for feedback, < 2s for reports
-- **Frontend Load**: < 2 seconds (optimized React)
-- **Audio Processing**: Real-time with < 100ms latency
-- **Mistral Inference**: 1-3 seconds per response
-
----
-
-## Roadmap
-
-**Phase 2 (Coming Soon):**
-- User authentication & history
-- Session persistence (PostgreSQL)
-- Advanced analytics dashboard
-- Competitive mode & leaderboards
-
-**Phase 3:**
-- Video recording (body language feedback)
-- Emotion detection from speech
-- Multi-language support
-- Mobile app (React Native)
-
-**Phase 4:**
-- Enterprise features
-- LinkedIn integration
-- Company-specific libraries
-- Team collaboration tools
-
----
-
-## Contributing
-
-Issues, features, and PRs welcome! 
+## 🤝 Contributing
 
 ```bash
-git clone https://github.com/voicecoach-ai/voicecoach
-cd voicecoach
+# 1. Fork and clone
+git clone https://github.com/idrissbado/VoxaLabs.git
+
+# 2. Create feature branch
 git checkout -b feature/your-feature
+
+# 3. Make changes
+# ... edit files ...
+
+# 4. Test locally
+cd backend && python main.py
+cd frontend && npm start
+
+# 5. Commit and push
+git add .
+git commit -m "feat: description"
+git push origin feature/your-feature
+
+# 6. Create Pull Request
 ```
 
 ---
 
-## Support
+## 📝 License
 
-- **Issues & Bugs**: GitHub Issues
-- **Feature Requests**: GitHub Discussions  
-- **Documentation**: See [ARCHITECTURE.md](ARCHITECTURE.md)
-- **API Help**: http://localhost:8000/docs (Swagger)
+MIT License - See LICENSE file for details
 
 ---
 
-## Team
+## 🔗 Links
 
-Built by Idriss Olivier Bado with expertise in:
-- Data architecture
-- Full-stack software engineering
-- Technical team leadership
-- Interview coaching (15+ years)
-
-Powered by [Mistral AI](https://mistral.ai) and [LangChain](https://langchain.com)
+- **Live Demo**: https://huggingface.co/spaces/mistral-hackaton-2026/voxalab
+- **GitHub**: https://github.com/idrissbado/VoxaLabs
+- **API Docs**: http://localhost:8000/docs
+- **Mistral**: https://mistral.ai
 
 ---
 
-## License
+## 📞 Support
 
-MIT - See LICENSE file
+- **Documentation**: [ARCHITECTURE.md](ARCHITECTURE.md)
+- **Issues**: [GitHub Issues](https://github.com/idrissbado/VoxaLabs/issues)
+- **API Help**: http://localhost:8000/docs
 
 ---
 
-**Live Demo**: Coming Soon  
-**Repository**: https://github.com/voicecoach-ai  
-**Website**: https://voicecoach-ai.com  
+<div align="center">
+
+### Built with ❤️ using Mistral AI
+
+**Star ⭐ this repository if you found it helpful!**
+
+[GitHub](https://github.com/idrissbado/VoxaLabs) • [Live Demo](https://huggingface.co/spaces/mistral-hackaton-2026/voxalab)
 
 Last Updated: February 28, 2026
+
+</div>
