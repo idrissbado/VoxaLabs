@@ -11,7 +11,7 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
+# build/  # Keep frontend/build for deployment
 develop-eggs/
 dist/
 downloads/
