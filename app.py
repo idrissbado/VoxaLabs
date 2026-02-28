@@ -25,9 +25,45 @@ if env_path.exists():
 else:
     logger.warning(f"Warning: .env file not found at {env_path}")
 
-# Import routers
+# Import routers with error handling
 sys.path.insert(0, str(Path(__file__).parent / "backend"))
-from backend.routers import session, analysis, report, tts
+
+try:
+    from backend.routers import session
+    logger.info("✓ session router imported")
+except Exception as e:
+    logger.error(f"✗ Failed to import session router: {e}")
+    session = None
+
+try:
+    from backend.routers import analysis
+    logger.info("✓ analysis router imported")
+except Exception as e:
+    logger.error(f"✗ Failed to import analysis router: {e}")
+    analysis = None
+
+try:
+    from backend.routers import report
+    logger.info("✓ report router imported")
+except Exception as e:
+    logger.error(f"✗ Failed to import report router: {e}")
+    report = None
+
+try:
+    from backend.routers import tts
+    logger.info("✓ tts router imported")
+except Exception as e:
+    logger.error(f"✗ Failed to import tts router: {e}")
+    tts = None
+
+try:
+    from backend.routers import math_tutor
+    logger.info("✓ math_tutor router imported successfully")
+except Exception as e:
+    logger.error(f"✗ Failed to import math_tutor router: {e}")
+    import traceback
+    logger.error(traceback.format_exc())
+    math_tutor = None
 
 # Create FastAPI app
 app = FastAPI(
@@ -45,11 +81,36 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(session.router, prefix="/session", tags=["session"])
-app.include_router(analysis.router, prefix="/analysis", tags=["analysis"])
-app.include_router(report.router, prefix="/report", tags=["report"])
-app.include_router(tts.router, prefix="/tts", tags=["tts"])
+# Include routers only if successfully imported
+if session:
+    app.include_router(session.router, prefix="/session", tags=["session"])
+    logger.info("✓ session router registered")
+else:
+    logger.warning("! session router NOT registered")
+
+if analysis:
+    app.include_router(analysis.router, prefix="/analysis", tags=["analysis"])
+    logger.info("✓ analysis router registered")
+else:
+    logger.warning("! analysis router NOT registered")
+
+if report:
+    app.include_router(report.router, prefix="/report", tags=["report"])
+    logger.info("✓ report router registered")
+else:
+    logger.warning("! report router NOT registered")
+
+if tts:
+    app.include_router(tts.router, prefix="/tts", tags=["tts"])
+    logger.info("✓ tts router registered")
+else:
+    logger.warning("! tts router NOT registered")
+
+if math_tutor:
+    app.include_router(math_tutor.router, prefix="/math", tags=["math-tutor"])
+    logger.info("✓ math_tutor router registered - MATH ENDPOINTS ACTIVE")
+else:
+    logger.error("! math_tutor router NOT registered - MATH API ENDPOINTS UNAVAILABLE")
 
 # Health check endpoint
 @app.get("/health")
