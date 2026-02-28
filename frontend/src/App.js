@@ -2,13 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import {
-  FiMic, FiStopCircle, FiPlay, FiPause, FiCheck, FiCopy,
+  FiMic, FiStopCircle, FiPlay, FiPause, FiCheck,
   FiDownload, FiRefreshCw, FiVolume2, FiSettings,
   FiBarChart2, FiTrendingUp, FiCode, FiLayout,
   FiLoader, FiCheckCircle, FiAlertCircle, FiEdit, FiAward,
   FiTarget, FiZap, FiArrowRight, FiArrowLeft, FiChevronsRight
 } from 'react-icons/fi';
-import { MdMic } from 'react-icons/md';
 
 const API_BASE = typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
   ? '' 
