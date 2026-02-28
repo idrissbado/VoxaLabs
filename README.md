@@ -1,7 +1,7 @@
 ---
 title: VoxaLab AI
 emoji: 🎤
-colorFrom: cyan
+colorFrom: blue
 colorTo: purple
 sdk: docker
 app_file: app.py
