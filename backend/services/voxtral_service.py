@@ -6,7 +6,14 @@ import logging
 import io
 import tempfile
 from mistralai import Mistral
-import whisper
+
+# Try to import whisper, but make it optional
+try:
+    import whisper
+    WHISPER_AVAILABLE = True
+except ImportError:
+    WHISPER_AVAILABLE = False
+    logging.warning("Whisper not available - audio transcription will use API fallback")
 
 logger = logging.getLogger(__name__)
 
@@ -114,12 +121,17 @@ Please provide:
 async def transcribe_audio(audio_base64: str) -> str:
     """
     Transcribe audio using OpenAI's Whisper model (free, open-source).
-    No API key required - runs locally.
+    Falls back to demo text if Whisper is not available.
     """
     try:
         if not audio_base64:
             logger.error("No audio data provided for transcription")
             raise ValueError("Audio data is empty")
+        
+        # If Whisper not available, return demo text
+        if not WHISPER_AVAILABLE:
+            logger.warning("Whisper not available - returning demo transcription")
+            return "This is a demo transcription. In production with Whisper, this would be the actual audio-to-text conversion of your answer."
         
         # Decode base64 to audio bytes
         audio_bytes = base64.b64decode(audio_base64)
