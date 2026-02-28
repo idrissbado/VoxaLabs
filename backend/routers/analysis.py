@@ -160,3 +160,17 @@ async def get_improved_answer(req: AnalyzeTextRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/transcribe")
+async def transcribe_only(req: AnalyzeAudioRequest):
+    """Just transcribe audio without analysis."""
+    try:
+        logger.info("Transcribing audio")
+        transcript = await transcribe_audio(req.audio_base64)
+        return {
+            "success": True,
+            "transcript": transcript
+        }
+    except Exception as e:
+        logger.error(f"Transcription error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
