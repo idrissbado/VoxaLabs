@@ -20,8 +20,7 @@ COPY requirements.txt requirements.txt
 
 # Install Python dependencies with optimization flags
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip cache purge
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy backend code
 COPY --chown=user backend/ /app/backend/
