@@ -23,6 +23,7 @@ class SubmitAnswerRequest(BaseModel):
     question: str
     user_answer: str
     language: str = "en"
+    role: str = "Software Engineer"
 
 @router.get("/questions")
 async def get_role_questions(role: str = Query(...), language: str = Query("en")):
@@ -126,15 +127,15 @@ async def submit_answer(req: SubmitAnswerRequest):
     try:
         logger.info(f"Submitting answer for session {req.session_id}")
         
-        # Get role from session
-        if req.session_id not in sessions:
-            raise HTTPException(status_code=404, detail="Session not found")
-        
-        session = sessions[req.session_id]
-        role = session.get("role", "Software Engineer")
-        
         # Import here to avoid circular imports
         from services.mistral_service import generate_coaching_feedback
+        from services.scoring_engine import ROLE_MAPPING
+        
+        # Map the role (e.g., java -> Software Engineer)
+        role = ROLE_MAPPING.get(req.role.lower(), req.role)
+        logger.info(f"Mapped role '{req.role}' to '{role}'")
+        
+        logger.info(f"Processing answer for question: {req.question[:50]}...")
         
         # Generate coaching feedback using Mistral AI
         feedback = await generate_coaching_feedback(

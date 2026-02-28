@@ -188,7 +188,8 @@ function App() {
         session_id: sessionId,
         question: currentQuestion,
         user_answer: userAnswer,
-        language: selectedLanguage
+        language: selectedLanguage,
+        role: selectedRole
       });
 
       setFeedback(response.data);
