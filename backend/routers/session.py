@@ -140,9 +140,8 @@ async def submit_answer(req: SubmitAnswerRequest):
         # Generate coaching feedback using Mistral AI
         feedback = await generate_coaching_feedback(
             question=req.question,
-            user_answer=req.user_answer,
-            role=role,
-            language=req.language
+            answer=req.user_answer,
+            role=role
         )
         
         return {
