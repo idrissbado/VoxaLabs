@@ -649,7 +649,7 @@ function App() {
             <div className="about-container">
               <div className="about-profile">
                 <div className="profile-image-wrapper">
-                  <img src="/idriss.png" alt="Idriss Olivier Bado" className="profile-image" />
+                  <div className="profile-avatar-emoji">👨‍💼</div>
                 </div>
                 
                 <div className="profile-info">
@@ -665,26 +665,81 @@ function App() {
                     </p>
                   </div>
 
+                  <div className="about-mission">
+                    <h2>Our Mission</h2>
+                    <p>
+                      PrepCoach empowers learners and professionals worldwide by providing intelligent, personalized coaching for interviews, career development, exam preparation, and skill training. We believe that preparation should be accessible, engaging, and effective for everyone.
+                    </p>
+                  </div>
+
+                  <div className="about-features-section">
+                    <h2>Platform Features</h2>
+                    
+                    <div className="features-grid">
+                      <div className="feature-card">
+                        <div className="feature-icon-large">🎤</div>
+                        <h3>Interview Coach</h3>
+                        <p>Real-time AI coaching for multiple professional roles including Java Backend, Frontend, DevOps, Data Science, and Product Manager positions. Get instant feedback on your answers with voice recognition and detailed analysis.</p>
+                        <ul className="feature-list">
+                          <li>✓ Multiple role-based interviews</li>
+                          <li>✓ Voice and text input modes</li>
+                          <li>✓ Real-time transcription</li>
+                          <li>✓ Detailed performance reports</li>
+                          <li>✓ Multi-language support</li>
+                        </ul>
+                      </div>
+
+                      <div className="feature-card">
+                        <div className="feature-icon-large">📐</div>
+                        <h3>Math Tutor</h3>
+                        <p>Advanced mathematical problem solver and step-by-step tutor powered by Mistral Large 3. Perfect for learning complex mathematics through guided problem-solving and detailed explanations with LaTeX formatting.</p>
+                        <ul className="feature-list">
+                          <li>✓ Problem analysis & classification</li>
+                          <li>✓ Step-by-step validation</li>
+                          <li>✓ LaTeX solution generation</li>
+                          <li>✓ Practice problem generation</li>
+                          <li>✓ Learning insights & guidance</li>
+                        </ul>
+                      </div>
+
+                      <div className="feature-card">
+                        <div className="feature-icon-large">💰</div>
+                        <h3>Finance Coach</h3>
+                        <p>Specialized coaching for finance interviews and financial analysis. Get expert guidance on investment strategies, financial modeling, case studies, and market analysis with real-world scenarios.</p>
+                        <ul className="feature-list">
+                          <li>✓ Finance interview prep</li>
+                          <li>✓ Investment analysis</li>
+                          <li>✓ Financial modeling guidance</li>
+                          <li>✓ Case study walkthroughs</li>
+                          <li>✓ Market insights</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="profile-features">
-                    <div className="feature">
-                      <FiCode size={24} />
-                      <div>
-                        <h3>Full-Stack Development</h3>
-                        <p>React, Python, FastAPI, Machine Learning</p>
+                    <h2>My Expertise</h2>
+                    <div className="expertise-grid">
+                      <div className="feature">
+                        <FiCode size={24} />
+                        <div>
+                          <h3>Full-Stack Development</h3>
+                          <p>React, Python, FastAPI, Machine Learning</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="feature">
-                      <FiZap size={24} />
-                      <div>
-                        <h3>AI Integration</h3>
-                        <p>Mistral Large 3, Whisper, LangChain</p>
+                      <div className="feature">
+                        <FiZap size={24} />
+                        <div>
+                          <h3>AI Integration</h3>
+                          <p>Mistral Large 3, Whisper, LangChain</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="feature">
-                      <FiTarget size={24} />
-                      <div>
-                        <h3>Product Design</h3>
-                        <p>User-centric, scalable platforms</p>
+                      <div className="feature">
+                        <FiTarget size={24} />
+                        <div>
+                          <h3>Product Design</h3>
+                          <p>User-centric, scalable platforms</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -699,13 +754,6 @@ function App() {
                       <FiLinkedin size={24} />
                       <span>Connect on LinkedIn</span>
                     </a>
-                  </div>
-
-                  <div className="about-mission">
-                    <h2>Our Mission</h2>
-                    <p>
-                      PrepCoach empowers learners and professionals worldwide by providing intelligent, personalized coaching for interviews, career development, exam preparation, and skill training. We believe that preparation should be accessible, engaging, and effective for everyone.
-                    </p>
                   </div>
 
                   <div className="about-tech">
