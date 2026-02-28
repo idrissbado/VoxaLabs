@@ -18,6 +18,13 @@ class CreateSessionRequest(BaseModel):
 class NextQuestionRequest(BaseModel):
     language: str = "en"
 
+class SubmitAnswerRequest(BaseModel):
+    session_id: str
+    question: str
+    answer: str
+    role: str
+    language: str = "en"
+
 @router.get("/questions")
 async def get_role_questions(role: str = Query(...), language: str = Query("en")):
     """Get all questions for a specific role and language."""
@@ -113,3 +120,29 @@ async def get_current_question(session_id: str):
         "index": idx,
         "total": len(session["questions"])
     }
+
+@router.post("/answer")
+async def submit_answer(req: SubmitAnswerRequest):
+    """Submit an answer to get coaching feedback."""
+    try:
+        logger.info(f"Submitting answer for session {req.session_id}")
+        
+        # Import here to avoid circular imports
+        from services.mistral_service import generate_coaching_feedback
+        
+        # Generate coaching feedback using Mistral AI
+        feedback = await generate_coaching_feedback(
+            question=req.question,
+            user_answer=req.answer,
+            role=req.role,
+            language=req.language
+        )
+        
+        return {
+            "success": True,
+            "feedback": feedback,
+            "session_id": req.session_id
+        }
+    except Exception as e:
+        logger.error(f"Error processing answer: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
