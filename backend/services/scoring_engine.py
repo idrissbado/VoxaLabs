@@ -8,6 +8,20 @@ logger = logging.getLogger(__name__)
 # Initialize Mistral client - requires MISTRAL_API_KEY in environment
 client = Mistral(api_key=os.environ.get("MISTRAL_API_KEY", ""))
 
+# Role mapping from frontend aliases to actual roles
+ROLE_MAPPING = {
+    "java": "Software Engineer",
+    "backend": "Software Engineer",
+    "frontend": "Software Engineer",
+    "fullstack": "Software Engineer",
+    "engineer": "Software Engineer",
+    "software": "Software Engineer",
+    "product": "Product Manager",
+    "pm": "Product Manager",
+    "designer": "Designer",
+    "design": "Designer",
+}
+
 # Translation dictionary for questions in multiple languages
 QUESTION_BANK_MULTI_LANGUAGE = {
     "Software Engineer": {
@@ -196,13 +210,16 @@ QUESTION_BANK = {
 
 def get_questions(role: str, language: str = "en") -> list:
     """Get interview questions for a specific role and language."""
-    if role in QUESTION_BANK_MULTI_LANGUAGE:
-        questions = QUESTION_BANK_MULTI_LANGUAGE[role].get(language)
+    # Map frontend role aliases to actual roles
+    actual_role = ROLE_MAPPING.get(role.lower(), role)
+    
+    if actual_role in QUESTION_BANK_MULTI_LANGUAGE:
+        questions = QUESTION_BANK_MULTI_LANGUAGE[actual_role].get(language)
         if questions:
             return questions  # Return ALL questions (10 per role)
     
     # Fallback to English
-    return QUESTION_BANK.get(role, [])  # Return all questions
+    return QUESTION_BANK.get(actual_role, [])  # Return all questions
 
 def detect_filler_words(transcript: str) -> list:
     """
