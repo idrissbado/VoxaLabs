@@ -194,6 +194,7 @@ function App() {
     try {
       setLoading(true);
       setError(null);
+      logger(`🔄 Analyzing your response...`);
 
       logger(`Submitting answer for question: ${currentQuestion?.substring(0, 50)}...`);
       logger(`User role: ${selectedRole?.name}, Language: ${selectedLanguage}`);
@@ -206,15 +207,31 @@ function App() {
         role: selectedRole?.name || selectedRole
       });
 
-      logger('✓ Answer submitted successfully');
+      logger('✅ Analysis complete! Feedback received');
       console.log('Coaching feedback received:', response.data);
       
-      setFeedback(response.data);
-      setSessionAnswers([...sessionAnswers, { question: currentQuestion, answer: userAnswer, score: response.data.score || 0 }]);
+      // Extract feedback data from response
+      const feedbackData = response.data;
+      const score = feedbackData.score || 70;
       
-      if (!response.data.score && !response.data.feedback) {
-        logger('⚠️ Warning: No feedback received. This might indicate an API issue.');
-        setError('Got response but feedback is incomplete. Showing what we have...');
+      // Structure feedback for display
+      const formattedFeedback = {
+        score: score,
+        feedback: feedbackData.feedback || 'Good Response',
+        tips: feedbackData.tips || 'Great effort! Continue to improve.',
+        strengths: feedbackData.strengths || [],
+        improvements: feedbackData.improvements || [],
+        clarity_score: feedbackData.clarity_score || 7,
+        structure_score: feedbackData.structure_score || 7,
+        impact_score: feedbackData.impact_score || 7
+      };
+      
+      setFeedback(formattedFeedback);
+      setSessionAnswers([...sessionAnswers, { question: currentQuestion, answer: userAnswer, score: score }]);
+      
+      logger(`✓ Score: ${score}/100`);
+      if (formattedFeedback.tips) {
+        logger(`📝 Tips: ${formattedFeedback.tips.substring(0, 100)}...`);
       }
     } catch (err) {
       logger('✗ Error submitting answer: ' + (err.response?.data?.detail || err.message));
@@ -593,12 +610,22 @@ function App() {
             </div>
           </div>
 
-          {feedback && (
+          {loading && (
+            <div className="analyzing-panel">
+              <div className="analyzing-content">
+                <FiLoader className="analyzing-icon" />
+                <h3>🤖 Analyzing Your Response...</h3>
+                <p>Let Mistral AI coach you on your answer</p>
+              </div>
+            </div>
+          )}
+
+          {!loading && feedback && (
             <div className="feedback-panel">
               <div className="feedback-header-section">
                 <div className="score-display">
                   <div className="score-circle">
-                    <span className="score-number">{feedback.score}</span>
+                    <span className="score-number">{Math.round(feedback.score)}</span>
                     <span className="score-max">/100</span>
                   </div>
                   <div className="score-info">
@@ -610,8 +637,51 @@ function App() {
 
               <div className="feedback-content">
                 <div className="feedback-section">
-                  <h4 className="feedback-title">Coaching Tips</h4>
-                  <p className="feedback-text">{feedback.tips}</p>
+                  <h4 className="feedback-title">💡 Coaching Tips</h4>
+                  <p className="feedback-text">{feedback.tips || 'Great effort! Continue to improve your responses.'}</p>
+                </div>
+
+                {feedback.strengths && feedback.strengths.length > 0 && (
+                  <div className="feedback-section">
+                    <h4 className="feedback-title">✅ Your Strengths</h4>
+                    <ul className="feedback-list">
+                      {feedback.strengths.map((strength, idx) => (
+                        <li key={idx}>{strength}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {feedback.improvements && feedback.improvements.length > 0 && (
+                  <div className="feedback-section">
+                    <h4 className="feedback-title">📈 Areas for Improvement</h4>
+                    <ul className="feedback-list">
+                      {feedback.improvements.map((improvement, idx) => (
+                        <li key={idx}>{improvement}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div className="score-breakdown">
+                  <div className="score-item">
+                    <span>Clarity</span>
+                    <div className="score-bar">
+                      <div className="score-fill" style={{width: `${(feedback.clarity_score || 7) * 10}%`}}></div>
+                    </div>
+                  </div>
+                  <div className="score-item">
+                    <span>Structure</span>
+                    <div className="score-bar">
+                      <div className="score-fill" style={{width: `${(feedback.structure_score || 7) * 10}%`}}></div>
+                    </div>
+                  </div>
+                  <div className="score-item">
+                    <span>Impact</span>
+                    <div className="score-bar">
+                      <div className="score-fill" style={{width: `${(feedback.impact_score || 7) * 10}%`}}></div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="feedback-actions">

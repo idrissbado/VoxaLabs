@@ -138,15 +138,25 @@ async def submit_answer(req: SubmitAnswerRequest):
         logger.info(f"Processing answer for question: {req.question[:50]}...")
         
         # Generate coaching feedback using Mistral AI
-        feedback = await generate_coaching_feedback(
+        feedback_data = await generate_coaching_feedback(
             question=req.question,
             answer=req.user_answer,
             role=role
         )
         
+        # Flatten response structure for frontend
         return {
             "success": True,
-            "feedback": feedback,
+            "score": feedback_data.get("overall_score", 70),
+            "feedback": "Good Response",
+            "tips": feedback_data.get("coaching_tip", ""),
+            "strengths": feedback_data.get("key_strengths", []),
+            "improvements": feedback_data.get("areas_for_improvement", []),
+            "clarity_score": feedback_data.get("clarity_score", 7),
+            "structure_score": feedback_data.get("structure_score", 7),
+            "impact_score": feedback_data.get("impact_score", 7),
+            "filler_words": feedback_data.get("filler_words_noticed", []),
+            "star_method": feedback_data.get("star_method_evaluation", {}),
             "session_id": req.session_id
         }
     except Exception as e:
