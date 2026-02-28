@@ -7,10 +7,11 @@ Complete production deployment for VoxaLab AI. Supports local, Docker, and cloud
 ## Table of Contents
 
 1. Quick Start
-2. Local Development
-3. Docker Deployment
-4. Environment Configuration
-5. Troubleshooting
+2. Features Overview
+3. Local Development
+4. Docker Deployment
+5. Environment Configuration
+6. Troubleshooting
 
 ---
 
@@ -41,6 +42,46 @@ npm start
 
 Frontend: http://localhost:3000
 API Docs: http://localhost:8000/docs
+
+---
+
+## Features Overview
+
+### 1. Interview Coach Mode
+Practice for technical and non-technical interviews with AI coaching:
+- **Voice Recognition**: Transcribe answers via Whisper API
+- **Real-time Feedback**: Mistral Large 3 provides coaching on your response
+- **Role Selection**: Choose from Java, Frontend, DevOps, Data Science, or Product Manager
+- **Score & Analysis**: Get detailed performance metrics
+- **Voice Playback**: Hear coaching feedback spoken naturally via ElevenLabs
+
+**Endpoints**:
+- POST `/session/start` - Start interview practice session
+- POST `/session/answer` - Submit answer and get coaching feedback
+- GET `/session/questions` - Get role-specific questions
+- POST `/report/generate` - Generate session report
+
+### 2. Math Tutor Mode (NEW)
+Learn mathematics with AI-powered step-by-step guidance:
+- **Problem Analysis**: AI classifies topic, estimates difficulty, identifies key concepts
+- **Step Validation**: Verify each step with error detection (algebraic, conceptual, notation)
+- **Smart Hints**: Get guidance without spoiling the solution
+- **Error Detection**: Identifies common mistakes and provides targeted feedback
+- **LaTeX Solutions**: Get publication-ready mathematical formatting
+- **Mastery Tracking**: Progress scores and learning insights
+- **Practice Generation**: Create similar problems for reinforcement
+
+**Key Features**:
+- Pedagogical approach (guides, never solves immediately)
+- Confidence scoring (reasoning quality 1-10)
+- Error categorization (algebraic, conceptual, notation, logical)
+- Practice problem generation with hint sequences
+
+**Endpoints**:
+- POST `/math/analyze` - Analyze problem and provide initial guidance
+- POST `/math/validate-step` - Validate student step with error detection
+- POST `/math/generate-solution` - Generate complete solution with LaTeX
+- POST `/math/practice-problem` - Generate practice problems
 
 ---
 

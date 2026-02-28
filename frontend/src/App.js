@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import { MathTutor } from './MathTutor';
 import {
   FiMic, FiStopCircle, FiPlay, FiPause, FiCheck,
   FiDownload, FiRefreshCw, FiVolume2, FiSettings,
   FiBarChart2, FiTrendingUp, FiCode, FiLayout,
   FiLoader, FiCheckCircle, FiAlertCircle, FiEdit, FiAward,
   FiTarget, FiZap, FiArrowRight, FiArrowLeft, FiChevronsRight,
-  FiLinkedin, FiUser, FiHome
+  FiLinkedin, FiUser, FiHome, FiBookOpen
 } from 'react-icons/fi';
 
 const API_BASE = typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
@@ -23,6 +24,7 @@ const api = axios.create({
 
 function App() {
   const [page, setPage] = useState('landing');
+  const [mode, setMode] = useState('interview'); // 'interview' or 'math'
   const [selectedRole, setSelectedRole] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -732,6 +734,10 @@ function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {page === 'math' && (
+        <MathTutor onBack={() => setPage('landing')} />
       )}
     </div>
   );

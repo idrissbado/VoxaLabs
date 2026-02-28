@@ -1,6 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from routers import session, analysis, report, tts
+from routers import session, analysis, report, tts, math_tutor
 import uvicorn
 from dotenv import load_dotenv
 import os
@@ -46,6 +46,7 @@ app.include_router(session.router, prefix="/session", tags=["session"])
 app.include_router(analysis.router, prefix="/analysis", tags=["analysis"])
 app.include_router(report.router, prefix="/report", tags=["report"])
 app.include_router(tts.router, prefix="/tts", tags=["tts"])
+app.include_router(math_tutor.router, prefix="/math", tags=["math-tutor"])
 
 @app.get("/health")
 async def health():
