@@ -6,6 +6,20 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 
+# =============================================================================
+# MISTRAL HACKATHON - VoxaLab AI Interview Coaching Platform
+# =============================================================================
+# This app uses Mistral AI for:
+# 1. Coaching Feedback: Mistral Large 3 (mistralai SDK)
+# 2. Question Bank: Mistral-powered role mapping
+# 3. Audio Transcription: Whisper (future: Mistral Voxtral)
+# 
+# Key Endpoints:
+# - POST /session/answer → Mistral Large generates coaching feedback
+# - POST /analysis/transcribe → Whisper transcribes audio
+# - GET /session/questions → Role-mapped question bank
+# =============================================================================
+
 # Load environment variables from .env file (one directory up from backend)
 env_path = Path(__file__).parent / ".env"
 if env_path.exists():

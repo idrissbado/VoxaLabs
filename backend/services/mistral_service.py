@@ -1,10 +1,19 @@
 """
-Mistral AI Service with LangChain Integration
+[MISTRAL HACKATHON] VoxaLab AI - Interview Coaching with Mistral Large 3
 
-This module orchestrates AI-powered coaching using:
-- Mistral Large 3 LLM for advanced reasoning
+This module provides AI-powered coaching using:
+- Mistral Large 3 LLM for advanced interview feedback and analysis
 - LangChain for prompt management and chains
-- Structured outputs for consistent feedback
+- Structured outputs for consistent, actionable feedback
+
+Features:
+- Analyzes candidate interview answers
+- Provides STAR method evaluation
+- Detects filler words and speaking patterns
+- Generates improvement tips
+- Scores clarity, structure, impact, confidence
+
+Using: mistralai SDK with Mistral Large 3 model
 """
 
 import os
@@ -42,39 +51,47 @@ except Exception as e:
 
 # Template for analyzing candidate answers and providing structured feedback
 COACHING_PROMPT = ChatPromptTemplate.from_template("""
-You are an elite interview coach with 15+ years of experience conducting 
-technical and behavioral interviews across top companies.
+You are an elite interview coach with 15+ years of experience at FAANG companies.
+Your role is to provide professional, actionable feedback using structured evaluation.
 
-Your role is to provide constructive, specific feedback on interview answers.
-Evaluate clarity, structure, and impact using these criteria:
+🎯 HACKATHON-WINNING EVALUATION FRAMEWORK
 
-CLARITY (1-10): Does the answer clearly communicate ideas? No rambling.
-STRUCTURE (1-10): Does it follow a logical flow? STAR method encouraged.
-IMPACT (1-10): Are results quantified? Does it demonstrate value?
+Evaluate this answer across these competencies:
+- TECHNICAL_DEPTH (1-10): Does it show deep technical knowledge?
+- COMMUNICATION (1-10): Clear, concise, easy to follow?
+- PROBLEM_SOLVING (1-10): Logical approach? Considers edge cases?
+- STRUCTURE (1-10): STAR method? Well organized?
+- IMPACT (1-10): Results quantified? Demonstrates value?
 
-Candidate Profile: {role}
+Role: {role}
 Interview Question: {question}
 Candidate's Answer: {answer}
 
-Provide feedback as JSON with these EXACT fields:
+Respond with ONLY valid JSON matching this exact structure:
 {{
-  "clarity_score": <1-10>,
-  "structure_score": <1-10>,
-  "impact_score": <1-10>,
-  "overall_score": <1-10 average>,
-  "key_strengths": ["strength1", "strength2"],
-  "areas_for_improvement": ["improvement1", "improvement2"],
-  "coaching_tip": "Specific, actionable advice (2-3 sentences)",
-  "filler_words_noticed": ["um", "like"] or [],
-  "star_method_evaluation": {{
-    "situation": "detected" or "missing",
-    "task": "detected" or "missing",
-    "action": "detected" or "missing",
-    "result": "detected" or "missing"
+  "overall_score": <1.0-10.0>,
+  "technical_depth": <1-10>,
+  "communication": <1-10>,
+  "problem_solving": <1-10>,
+  "structure": <1-10>,
+  "impact": <1-10>,
+  "confidence_level": <0.0-1.0>,
+  "hire_recommendation": "Strong Hire" | "Lean Hire" | "No Hire",
+  "hire_probability": <0.0-1.0>,
+  "strengths": ["strength1", "strength2", "strength3"],
+  "weaknesses": ["weakness1", "weakness2"],
+  "missing_frameworks": ["framework1"],
+  "key_improvement": "Single most important thing to improve",
+  "improved_answer": "Example of ideal 3-sentence answer they could give",
+  "star_method": {{
+    "situation": "detected" | "missing",
+    "task": "detected" | "missing",
+    "action": "detected" | "missing",
+    "result": "detected" | "missing"
   }}
 }}
 
-Respond with ONLY valid JSON, no additional text.
+ONLY output valid JSON, nothing else.
 """)
 
 # Template for improving answers using STAR method

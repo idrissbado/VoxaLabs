@@ -7,7 +7,14 @@ import io
 import tempfile
 from mistralai import Mistral
 
-# Try to import whisper, but make it optional
+# =============================================================================
+# MISTRAL HACKATHON: Using Mistral AI for interview coaching
+# =============================================================================
+# Coaching AI: Mistral Large 3 (mistralai SDK) - provides AI feedback
+# Audio: Whisper transcription (future: Mistral Voxtral for real-time voice)
+# =============================================================================
+
+# Try to import whisper for audio transcription
 WHISPER_AVAILABLE = False
 WHISPER_MODEL = None
 
