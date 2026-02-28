@@ -301,3 +301,33 @@ async def generate_full_report(sessions: list, role: str) -> dict:
         "sessions_count": len(sessions),
         "avg_score": sum(s.get("overall", 5) for s in sessions) / len(sessions) if sessions else 0
     }
+
+def calculate_performance_metrics(sessions: list, role: str) -> dict:
+    """Calculate detailed performance metrics from session data."""
+    if not sessions:
+        return {
+            "error": "No sessions provided",
+            "role": role,
+            "metrics": {}
+        }
+    
+    scores = [s.get("overall", 5) for s in sessions]
+    hire_probs = [s.get("hire_probability", 0.5) for s in sessions]
+    
+    return {
+        "role": role,
+        "total_sessions": len(sessions),
+        "average_score": round(sum(scores) / len(scores), 1),
+        "max_score": max(scores),
+        "min_score": min(scores),
+        "score_trend": scores,  # List of scores to show progression
+        "average_hire_probability": round(sum(hire_probs) / len(hire_probs), 2),
+        "overall_readiness": "Ready" if sum(scores) / len(scores) >= 7.5 else "Almost Ready" if sum(scores) / len(scores) >= 6.0 else "Needs More Practice",
+        "performance_by_dimension": {
+            "technical": round(sum(s.get("technical_depth", 5) for s in sessions) / len(sessions), 1) if sessions else 0,
+            "communication": round(sum(s.get("communication", 5) for s in sessions) / len(sessions), 1) if sessions else 0,
+            "problem_solving": round(sum(s.get("problem_solving", 5) for s in sessions) / len(sessions), 1) if sessions else 0,
+            "structure": round(sum(s.get("structure", 5) for s in sessions) / len(sessions), 1) if sessions else 0,
+            "impact": round(sum(s.get("impact", 5) for s in sessions) / len(sessions), 1) if sessions else 0,
+        }
+    }

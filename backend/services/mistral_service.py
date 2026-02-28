@@ -1,13 +1,14 @@
 """
-[MISTRAL HACKATHON] VoxaLab AI - Interview Coaching with Mistral Large 3
+[MISTRAL HACKATHON] PrepCoach AI - AI-Powered Preparation & Coaching with Mistral Large 3
 
 This module provides AI-powered coaching using:
-- Mistral Large 3 LLM for advanced interview feedback and analysis
+- Mistral Large 3 LLM for advanced interview, career, and exam coaching
 - LangChain for prompt management and chains
 - Structured outputs for consistent, actionable feedback
 
 Features:
-- Analyzes candidate interview answers
+- Analyzes user answers (interviews, exams, training)
+- Provides personalized coaching and improvement tips
 - Provides STAR method evaluation
 - Detects filler words and speaking patterns
 - Generates improvement tips

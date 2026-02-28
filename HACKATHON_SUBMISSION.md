@@ -1,6 +1,6 @@
-# VoxaLab AI - Hackathon Submission Summary
+# PrepCoach AI - Hackathon Submission Summary
 
-**Project**: VoxaLab AI - AI-Powered Interview Coaching Platform  
+**Project**: PrepCoach AI - AI-Powered Preparation & Coaching Platform  
 **Hackathon**: Mistral Hackathon 2026  
 **Team**: Idriss Olivier Bado  
 **Submission Date**: February 28, 2026  
@@ -9,7 +9,7 @@
 
 ## 🎯 Executive Summary
 
-**VoxaLab AI** is a production-ready interview coaching platform that leverages **Mistral Large 3** through professional LangChain integration to provide real-time, personalized coaching feedback on interview answers.
+**PrepCoach AI** is a production-ready AI-powered platform for interview preparation, career coaching, exam prep, and skill training that leverages **Mistral Large 3** through professional LangChain integration to provide real-time, personalized coaching feedback on interview answers.
 
 The project **fully fulfills all Mistral Hackathon requirements**:
 - ✅ Uses Mistral Large 3 API as core coaching engine

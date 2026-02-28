@@ -8,10 +8,11 @@ import tempfile
 from mistralai import Mistral
 
 # =============================================================================
-# MISTRAL HACKATHON: Using Mistral AI for interview coaching
+# MISTRAL HACKATHON: PrepCoach AI - Using Mistral AI for prep & coaching
 # =============================================================================
 # Coaching AI: Mistral Large 3 (mistralai SDK) - provides AI feedback
-# Audio: Whisper transcription (future: Mistral Voxtral for real-time voice)
+# Audio: Whisper transcription - Real-time voice-to-text transcription
+# Supports: Interview prep, career coaching, exam prep, skill training
 # =============================================================================
 
 # Try to import whisper for audio transcription

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VoxaLab AI - Build Verification"""
+"""PrepCoach AI - Build Verification"""
 
 import sys
 import os
@@ -8,7 +8,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'backend'))
 
 print("=" * 70)
-print("VoxaLab AI - Mistral Hackathon Submission")
+print("🎓 PrepCoach AI - Mistral Hackathon Submission")
 print("=" * 70)
 print()
 

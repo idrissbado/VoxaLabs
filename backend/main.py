@@ -32,7 +32,7 @@ import logging
 logging.info(f"MISTRAL_API_KEY set: {bool(os.getenv('MISTRAL_API_KEY'))}")
 logging.info(f"ELEVENLABS_API_KEY set: {bool(os.getenv('ELEVENLABS_API_KEY'))}")
 
-app = FastAPI(title="VoiceCoach AI", version="1.0.0")
+app = FastAPI(title="PrepCoach AI", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
