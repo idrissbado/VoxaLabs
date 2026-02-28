@@ -39,32 +39,19 @@ export function MathTutor({ onBack }) {
       setLoading(true);
       setError(null);
 
-      try {
-        const response = await api.post('/math/analyze', {
-          problem_text: problem
-        });
-        setProblemAnalysis(response.data);
-      } catch (apiErr) {
-        // Fallback for demo if API is not available
-        console.log('API unavailable, using demo mode');
-        setProblemAnalysis({
-          topic: 'Advanced Mathematics',
-          subtopic: 'Number Theory & Analysis',
-          difficulty: 4,
-          required_concepts: ['Irrational Numbers', 'Dirichlet Principle', 'Equidistribution'],
-          problem_summary: 'Prove density of fractional parts for irrational numbers',
-          first_question: 'What mathematical principle can help establish density in a bounded set?',
-          solution_steps_count: '5-7 main steps'
-        });
-      }
+      const response = await api.post('/math/analyze', {
+        problem_text: problem
+      });
 
+      setProblemAnalysis(response.data);
       setPhase('solving');
       setStudentSteps([]);
       setCurrentStep('');
       setStepNumber(1);
       setStepFeedback(null);
     } catch (err) {
-      setError('Failed to analyze problem: ' + (err.response?.data?.detail || err.message));
+      setError('Error: ' + (err.response?.data?.detail || err.message));
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -84,37 +71,23 @@ export function MathTutor({ onBack }) {
         ? studentSteps.map(s => `Step ${s.number}: ${s.step}`).join('\n')
         : '';
 
-      try {
-        const response = await api.post('/math/validate-step', {
-          problem_text: problem,
-          step_number: stepNumber,
-          student_step: currentStep,
-          context: context
-        });
-        setStepFeedback(response.data);
-      } catch (apiErr) {
-        // Fallback for demo
-        console.log('Using demo mode for step validation');
-        setStepFeedback({
-          is_correct: true,
-          feedback: '✓ Correct! This step logically follows from the previous reasoning.',
-          explanation: 'Your approach is mathematically sound.',
-          hint: 'Continue with the next logical step in your derivation.'
-        });
-      }
-
-      // Always proceed in demo mode
-      setStepFeedback(prev => prev || {
-        is_correct: true,
-        feedback: '✓ Excellent step!',
-        explanation: 'Your mathematical reasoning is on track.'
+      const response = await api.post('/math/validate-step', {
+        problem_text: problem,
+        step_number: stepNumber,
+        student_step: currentStep,
+        context: context
       });
 
-      setStudentSteps([...studentSteps, { number: stepNumber, step: currentStep }]);
-      setCurrentStep('');
-      setStepNumber(stepNumber + 1);
+      setStepFeedback(response.data);
+      
+      if (response.data.is_correct) {
+        setStudentSteps([...studentSteps, { number: stepNumber, step: currentStep }]);
+        setCurrentStep('');
+        setStepNumber(stepNumber + 1);
+      }
     } catch (err) {
-      setError('Failed to validate step: ' + (err.response?.data?.detail || err.message));
+      setError('Error validating step: ' + (err.response?.data?.detail || err.message));
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -127,23 +100,11 @@ export function MathTutor({ onBack }) {
       setLoading(true);
       setError(null);
 
-      try {
-        const response = await api.post('/math/generate-solution', {
-          problem_text: problem,
-          student_solution: studentSolution
-        });
-        setFinalSolution(response.data);
-      } catch (apiErr) {
-        // Fallback for demo
-        console.log('Using demo mode for solution generation');
-        setFinalSolution({
-          is_complete: true,
-          latex_solution: `\\[\\text{Given: } \\alpha \\text{ irrational}\\]\\[\\text{By Dirichlet's Principle: } \\exists m,n \\in \\mathbb{Z}, |m\\alpha - n| < \\frac{1}{N}\\]\\[\\text{Then: } \\{m\\alpha\\} \\text{ approaches } 0\\]\\[\\text{By Weyl's Equidistribution: density proven}\\]`,
-          summary: 'The fractional parts {nα} of an irrational α are dense in [0,1]',
-          concepts_used: ['Dirichlet Pigeonhole Principle', 'Weyl Equidistribution', 'Irrational Approximation'],
-          score: 95
-        });
-      }
+      const response = await api.post('/math/generate-solution', {
+        problem_text: problem,
+        student_solution: studentSolution
+      });
+      setFinalSolution(response.data);
 
       setPhase('solution');
     } catch (err) {
@@ -305,33 +266,38 @@ export function MathTutor({ onBack }) {
                       {stepFeedback.is_correct ? (
                         <>
                           <FiCheckCircle size={20} />
-                          <strong>Correct!</strong>
+                          <strong>✓ Correct!</strong>
                         </>
                       ) : (
                         <>
                           <FiAlertCircle size={20} />
-                          <strong>Not quite right</strong>
+                          <strong>⚠ Let's review this step</strong>
                         </>
                       )}
                     </div>
+                    <p className="coaching-feedback"><strong>Coach says:</strong> {stepFeedback.feedback || stepFeedback.explanation || 'Good work on this step!'}</p>
                     {stepFeedback.error_type && (
-                      <p className="error-type"><strong>Error type:</strong> {stepFeedback.error_type}</p>
+                      <p className="error-type"><strong>Note:</strong> {stepFeedback.error_type}</p>
                     )}
-                    <p className="explanation">{stepFeedback.explanation}</p>
+                    {stepFeedback.explanation && (
+                      <p className="explanation">{stepFeedback.explanation}</p>
+                    )}
                     {stepFeedback.hint && (
                       <div className="hint-box">
-                        <strong>💡 Hint:</strong> {stepFeedback.hint}
+                        <strong>💡 Hint for next step:</strong> {stepFeedback.hint}
                       </div>
                     )}
-                    <div className="confidence-meter">
-                      <span>Reasoning Quality: {stepFeedback.reasoning_quality_score}/10</span>
-                      <div className="meter">
-                        <div 
-                          className="meter-fill" 
-                          style={{width: `${stepFeedback.reasoning_quality_score * 10}%`}}
-                        />
+                    {stepFeedback.reasoning_quality_score && (
+                      <div className="confidence-meter">
+                        <span>Reasoning Quality: {stepFeedback.reasoning_quality_score}/10</span>
+                        <div className="meter">
+                          <div 
+                            className="meter-fill" 
+                            style={{width: `${stepFeedback.reasoning_quality_score * 10}%`}}
+                          />
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 )}
 
