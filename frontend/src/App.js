@@ -309,6 +309,44 @@ function App() {
           </nav>
 
           <div className="landing-content">
+            <div className="coaching-modes-section">
+              <h2 className="section-title">Choose Your Coaching Mode</h2>
+              <div className="coaching-modes-grid">
+                <div 
+                  className="coaching-mode-card interview-mode"
+                  onClick={() => setPage('landing')}
+                >
+                  <div className="mode-icon">🎤</div>
+                  <h3>Interview Coach</h3>
+                  <p>Master interview skills for tech and non-tech roles</p>
+                </div>
+                <div 
+                  className="coaching-mode-card math-mode"
+                  onClick={() => setPage('math')}
+                >
+                  <div className="mode-icon">📐</div>
+                  <h3>Math Tutor</h3>
+                  <p>Solve complex mathematics with step-by-step guidance</p>
+                </div>
+                <div 
+                  className="coaching-mode-card finance-mode"
+                  onClick={() => alert('Finance Coach coming soon!')}
+                >
+                  <div className="mode-icon">💰</div>
+                  <h3>Finance Coach</h3>
+                  <p>Excel in finance interviews and investment analysis</p>
+                </div>
+                <div 
+                  className="coaching-mode-card advisor-mode"
+                  onClick={() => alert('Personal Advisor coming soon!')}
+                >
+                  <div className="mode-icon">🎯</div>
+                  <h3>Personal Advisor</h3>
+                  <p>Get career guidance and personalized coaching</p>
+                </div>
+              </div>
+            </div>
+
             <div className="hero-section">
               <div className="hero-text">
                 <h1 className="hero-title">Master Your <span className="gradient-text">Interview Skills</span></h1>
@@ -649,7 +687,7 @@ function App() {
             <div className="about-container">
               <div className="about-profile">
                 <div className="profile-image-wrapper">
-                  <div className="profile-avatar-emoji">👨‍💼</div>
+                  <img src="/idr.png" alt="Idriss Olivier Bado" className="profile-image" />
                 </div>
                 
                 <div className="profile-info">

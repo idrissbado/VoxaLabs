@@ -2133,6 +2133,73 @@ body {
   color: var(--primary);
 }
 
+/* Coaching Modes Section */
+.coaching-modes-section {
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.coaching-modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.coaching-mode-card {
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.coaching-mode-card:hover {
+  border-color: var(--primary);
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0, 217, 255, 0.2);
+}
+
+.mode-icon {
+  font-size: 2.5rem;
+}
+
+.coaching-mode-card h3 {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin: 0;
+}
+
+.coaching-mode-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.interview-mode:hover {
+  border-color: #FF6B6B;
+}
+
+.math-mode:hover {
+  border-color: #4ECDC4;
+}
+
+.finance-mode:hover {
+  border-color: #FFEAA7;
+}
+
+.advisor-mode:hover {
+  border-color: #96CEB4;
+}
+
 /* About Page Styles */
 .about-page {
   min-height: 100vh;
@@ -2166,17 +2233,18 @@ body {
   justify-content: center;
 }
 
-.profile-avatar-emoji {
-  font-size: 6rem;
-  width: 150px;
-  height: 150px;
-  background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
-  border: 2px solid var(--primary);
+.profile-image {
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+  object-fit: cover;
+  border: 3px solid var(--primary);
+  box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.profile-image:hover {
+  transform: scale(1.05);
 }
 
 .profile-info {
