@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query, UploadFile, File, Form
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 from services.voxtral_service import analyze_voice_answer, transcribe_audio
@@ -162,11 +162,23 @@ async def get_improved_answer(req: AnalyzeTextRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/transcribe")
-async def transcribe_only(req: AnalyzeAudioRequest):
-    """Just transcribe audio without analysis."""
+async def transcribe_only(
+    file: UploadFile = File(...),
+    language: str = Form(default="en")
+):
+    """Transcribe audio file without analysis."""
     try:
-        logger.info("Transcribing audio")
-        transcript = await transcribe_audio(req.audio_base64)
+        logger.info("Transcribing audio file")
+        
+        # Read file bytes
+        audio_bytes = await file.read()
+        
+        # Convert to base64
+        audio_base64 = base64.b64encode(audio_bytes).decode('utf-8')
+        
+        # Transcribe
+        transcript = await transcribe_audio(audio_base64)
+        
         return {
             "success": True,
             "transcript": transcript
