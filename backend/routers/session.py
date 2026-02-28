@@ -21,8 +21,7 @@ class NextQuestionRequest(BaseModel):
 class SubmitAnswerRequest(BaseModel):
     session_id: str
     question: str
-    answer: str
-    role: str
+    user_answer: str
     language: str = "en"
 
 @router.get("/questions")
@@ -127,14 +126,21 @@ async def submit_answer(req: SubmitAnswerRequest):
     try:
         logger.info(f"Submitting answer for session {req.session_id}")
         
+        # Get role from session
+        if req.session_id not in sessions:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        session = sessions[req.session_id]
+        role = session.get("role", "Software Engineer")
+        
         # Import here to avoid circular imports
         from services.mistral_service import generate_coaching_feedback
         
         # Generate coaching feedback using Mistral AI
         feedback = await generate_coaching_feedback(
             question=req.question,
-            user_answer=req.answer,
-            role=req.role,
+            user_answer=req.user_answer,
+            role=role,
             language=req.language
         )
         
