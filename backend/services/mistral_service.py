@@ -32,6 +32,13 @@ logger = logging.getLogger(__name__)
 
 # Initialize Mistral client - handle missing API key gracefully
 api_key = os.environ.get("MISTRAL_API_KEY", "").strip()
+
+# Log API key status for debugging
+if api_key:
+    logger.info(f"✓ MISTRAL_API_KEY found (length: {len(api_key)} chars, starts with: {api_key[:10]}...)")
+else:
+    logger.warning("✗ MISTRAL_API_KEY not found in environment")
+
 client = None
 llm = None
 
@@ -39,10 +46,11 @@ try:
     if api_key and api_key != "your_mistral_api_key_here":
         client = Mistral(api_key=api_key)
         llm = ChatMistralAI(model="mistral-large-latest", api_key=api_key)
+        logger.info("✓ Mistral client initialized successfully")
     else:
-        logger.warning("MISTRAL_API_KEY not set or invalid - AI coaching will be unavailable")
+        logger.warning("⚠️ MISTRAL_API_KEY not set or placeholder value - AI coaching will use demo fallback")
 except Exception as e:
-    logger.error(f"Failed to initialize Mistral client: {e}")
+    logger.error(f"✗ Failed to initialize Mistral client: {e}")
     client = None
     llm = None
 
@@ -224,7 +232,7 @@ async def generate_coaching_feedback(
     """
     try:
         if coaching_chain is None:
-            logger.warning("Coaching chain not initialized - returning default feedback")
+            logger.warning("⚠️ Coaching chain not initialized - returning default feedback")
             return {
                 "clarity_score": 7,
                 "structure_score": 7,
@@ -267,7 +275,18 @@ async def generate_coaching_feedback(
             })
         }
     except Exception as e:
-        print(f"Error in coaching feedback: {str(e)}")
+        error_msg = str(e)
+        logger.error(f"✗ Error in coaching feedback: {error_msg}")
+        
+        # Log specific error types
+        if "401" in error_msg or "Unauthorized" in error_msg:
+            logger.error("✗ 401 UNAUTHORIZED: MISTRAL_API_KEY is invalid, expired, or not set correctly on HF Spaces")
+            logger.error("✗ Please check that MISTRAL_API_KEY environment variable is set in HF Spaces settings")
+        elif "403" in error_msg:
+            logger.error("✗ 403 FORBIDDEN: API key may not have permission for this endpoint")
+        elif "Invalid request" in error_msg or "Bad request" in error_msg:
+            logger.error("✗ Bad request: Check the request format and parameters")
+        
         # Return sensible defaults if LLM call fails
         return {
             "clarity_score": 7,
