@@ -179,10 +179,22 @@ async def transcribe_only(
         # Transcribe
         transcript = await transcribe_audio(audio_base64)
         
+        if not transcript or transcript.startswith("Demo:"):
+            logger.warning("⚠️ Whisper module not available - using demo transcription")
+            return {
+                "success": True,
+                "transcript": transcript,
+                "mode": "demo",
+                "note": "Audio transcription module not available. Please ensure Whisper is properly installed."
+            }
+        
+        logger.info(f"✓ Successfully transcribed audio ({len(transcript)} chars)")
         return {
             "success": True,
-            "transcript": transcript
+            "transcript": transcript,
+            "mode": "real"
         }
     except Exception as e:
-        logger.error(f"Transcription error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"✗ Transcription error: {str(e)}")
+        logger.error(f"✗ Check if Whisper module is installed: pip install openai-whisper")
+        raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
