@@ -1,3 +1,13 @@
+---
+title: VoxaLab AI
+emoji: 🎤
+colorFrom: cyan
+colorTo: purple
+sdk: docker
+app_file: app.py
+pinned: false
+---
+
 # VoxaLab AI
 
 ## Professional Interview Coaching Platform
