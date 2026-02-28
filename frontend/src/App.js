@@ -22,6 +22,11 @@ const api = axios.create({
   }
 });
 
+// Simple logger for debugging
+const logger = (message) => {
+  console.log(`[VoxaLab] ${message}`);
+};
+
 function App() {
   const [page, setPage] = useState('landing');
   const [mode, setMode] = useState('interview'); // 'interview' or 'math'
@@ -158,6 +163,7 @@ function App() {
 
     try {
       setLoading(true);
+      setError(null);
       const formData = new FormData();
       formData.append('file', recordedAudioBlob, 'audio.webm');
       formData.append('language', selectedLanguage);
@@ -169,8 +175,11 @@ function App() {
       setTranscript(response.data.transcript || 'No speech detected');
       setUserAnswer(response.data.transcript || '');
       setInputMethod('typing');
+      logger('✓ Audio transcribed successfully');
     } catch (err) {
-      setError('Transcription failed: ' + (err.response?.data?.detail || err.message));
+      logger('✗ Transcription failed: ' + (err.response?.data?.detail || err.message));
+      setError('Audio transcription is currently unavailable. Please type your answer instead.');
+      // Allow user to type answer as fallback
     } finally {
       setLoading(false);
     }
@@ -186,17 +195,30 @@ function App() {
       setLoading(true);
       setError(null);
 
+      logger(`Submitting answer for question: ${currentQuestion?.substring(0, 50)}...`);
+      logger(`User role: ${selectedRole?.name}, Language: ${selectedLanguage}`);
+
       const response = await api.post('/session/answer', {
         session_id: sessionId,
         question: currentQuestion,
         user_answer: userAnswer,
         language: selectedLanguage,
-        role: selectedRole
+        role: selectedRole?.name || selectedRole
       });
 
+      logger('✓ Answer submitted successfully');
+      console.log('Coaching feedback received:', response.data);
+      
       setFeedback(response.data);
-      setSessionAnswers([...sessionAnswers, { question: currentQuestion, answer: userAnswer, score: response.data.score }]);
+      setSessionAnswers([...sessionAnswers, { question: currentQuestion, answer: userAnswer, score: response.data.score || 0 }]);
+      
+      if (!response.data.score && !response.data.feedback) {
+        logger('⚠️ Warning: No feedback received. This might indicate an API issue.');
+        setError('Got response but feedback is incomplete. Showing what we have...');
+      }
     } catch (err) {
+      logger('✗ Error submitting answer: ' + (err.response?.data?.detail || err.message));
+      console.error('Full error:', err);
       setError('Failed to submit answer: ' + (err.response?.data?.detail || err.message));
     } finally {
       setLoading(false);

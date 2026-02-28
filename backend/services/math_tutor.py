@@ -11,7 +11,7 @@ from typing import Dict, List, Optional
 logger = logging.getLogger(__name__)
 
 # Initialize Mistral client with error handling
-api_key = os.environ.get("MISTRAL_API_KEY", "")
+api_key = os.environ.get("MISTRAL_API_KEY", "").strip()
 if not api_key:
     logger.warning("⚠️ MISTRAL_API_KEY not found in environment - Math Tutor will use demo fallback")
     client = None

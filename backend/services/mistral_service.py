@@ -31,7 +31,7 @@ from langchain_core.runnables import RunnablePassthrough
 logger = logging.getLogger(__name__)
 
 # Initialize Mistral client - handle missing API key gracefully
-api_key = os.environ.get("MISTRAL_API_KEY", "")
+api_key = os.environ.get("MISTRAL_API_KEY", "").strip()
 client = None
 llm = None
 

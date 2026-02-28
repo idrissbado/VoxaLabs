@@ -45,8 +45,8 @@ except Exception as e:
 logger = logging.getLogger(__name__)
 
 # Initialize Mistral client - make sure MISTRAL_API_KEY is set in .env
-api_key = os.environ.get("MISTRAL_API_KEY")
-if not api_key or api_key.strip() == "":
+api_key = os.environ.get("MISTRAL_API_KEY", "").strip()
+if not api_key or api_key == "":
     logger.warning("MISTRAL_API_KEY not set in environment")
     api_key = ""
 

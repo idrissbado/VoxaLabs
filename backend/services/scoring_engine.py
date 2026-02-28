@@ -6,7 +6,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Initialize Mistral client - requires MISTRAL_API_KEY in environment
-client = Mistral(api_key=os.environ.get("MISTRAL_API_KEY", ""))
+client = Mistral(api_key=os.environ.get("MISTRAL_API_KEY", "").strip())
 
 # Role mapping from frontend aliases to actual roles
 ROLE_MAPPING = {
