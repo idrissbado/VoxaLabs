@@ -11,8 +11,17 @@ from mistralai import Mistral
 try:
     import whisper
     WHISPER_AVAILABLE = True
+    logging.warning("✓ Whisper is available - real audio transcription enabled")
+    # Preload the base model for faster transcription
+    try:
+        WHISPER_MODEL = whisper.load_model("base")
+        logging.warning("✓ Whisper model loaded successfully")
+    except Exception as e:
+        logging.warning(f"Failed to preload Whisper model: {e}")
+        WHISPER_MODEL = None
 except ImportError:
     WHISPER_AVAILABLE = False
+    WHISPER_MODEL = None
     logging.warning("Whisper not available - audio transcription will use API fallback")
 
 logger = logging.getLogger(__name__)
@@ -137,10 +146,9 @@ async def transcribe_audio(audio_base64: str) -> str:
         audio_bytes = base64.b64decode(audio_base64)
         logger.info(f"Received audio data: {len(audio_bytes)} bytes")
         
-        # Load Whisper model (tiny for speed, base for accuracy)
-        # First time will download the model (~140MB for tiny, ~1.4GB for base)
-        model = whisper.load_model("base", device="cpu")
-        logger.info("Whisper model loaded")
+        # Use preloaded model or load if needed
+        model = WHISPER_MODEL if WHISPER_MODEL else whisper.load_model("base", device="cpu")
+        logger.info("Whisper model ready for transcription")
         
         # Save audio bytes to temporary file (Whisper needs a file path)
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_file:
