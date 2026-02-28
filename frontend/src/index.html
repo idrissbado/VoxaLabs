@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VoiceCoach AI — Real-Time Interview Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080a0f;
+    --surface: #0e1117;
+    --surface2: #151a24;
+    --border: #1e2535;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-serif: 'Instrument Serif', serif;
+  }
+
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-display); overflow-x: hidden; }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%);
+    top: -200px; right: -200px;
+    pointer-events: none; z-index: 0;
+    animation: drift 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift { to { transform: translate(-40px, 40px); } }
+
+  #root { position: relative; z-index: 1; min-height: 100vh; }
+
+  /* ─── LANDING ─── */
+  .landing {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2rem; text-align: center;
+    animation: fadeUp 0.8s ease both;
+  }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
+
+  .logo-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(124,58,237,0.1));
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 100px; padding: 0.4rem 1rem;
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent);
+    margin-bottom: 2rem; letter-spacing: 0.1em;
+  }
+  .logo-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+  .hero-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 800; line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+  .hero-title em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  
+  .hero-sub {
+    font-size: 1.15rem; color: var(--muted); max-width: 500px;
+    line-height: 1.7; margin-bottom: 3rem; font-weight: 400;
+  }
+
+  .role-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem; width: 100%; max-width: 700px; margin-bottom: 2rem;
+  }
+
+  .role-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 1rem 1.25rem;
+    cursor: pointer; transition: all 0.2s;
+    text-align: left;
+  }
+  .role-card:hover { border-color: var(--accent); background: rgba(0,229,255,0.05); transform: translateY(-2px); }
+  .role-card.selected { border-color: var(--accent); background: rgba(0,229,255,0.08); }
+  .role-card .role-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .role-card .role-name { font-size: 0.9rem; font-weight: 600; }
+  .role-card .role-desc { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .cta-btn {
+    background: var(--accent); color: var(--bg);
+    border: none; border-radius: 12px;
+    padding: 1rem 2.5rem; font-size: 1rem; font-weight: 700;
+    font-family: var(--font-display); cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.02em;
+  }
+  .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,229,255,0.3); }
+  .cta-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ─── PRACTICE PAGE ─── */
+  .practice {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    grid-template-rows: auto 1fr auto;
+    gap: 0;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .practice-header {
+    grid-column: 1/-1;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,10,15,0.8); backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .practice-header .brand { font-size: 1rem; font-weight: 800; letter-spacing: -0.02em; }
+  .practice-header .brand span { color: var(--accent); }
+  .progress-track {
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .progress-pip {
+    width: 28px; height: 4px; border-radius: 2px;
+    background: var(--border); transition: all 0.3s;
+  }
+  .progress-pip.done { background: var(--green); }
+  .progress-pip.active { background: var(--accent); }
+
+  .main-panel {
+    padding: 2.5rem; display: flex; flex-direction: column; gap: 2rem;
+    border-right: 1px solid var(--border); overflow-y: auto;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+  }
+  .question-label {
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .question-label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--accent); }
+  .question-text {
+    font-size: 1.4rem; font-weight: 600; line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  /* MIC AREA */
+  .mic-area {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 1.5rem; padding: 2rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+
+  .mic-ring {
+    position: relative; width: 120px; height: 120px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mic-ring::before, .mic-ring::after {
+    content: '';
+    position: absolute; border-radius: 50%;
+    border: 2px solid var(--accent);
+    opacity: 0; animation: none;
+  }
+  .mic-ring.listening::before { width: 140%; height: 140%; animation: ripple 1.5s ease-out infinite; }
+  .mic-ring.listening::after { width: 180%; height: 180%; animation: ripple 1.5s ease-out infinite 0.5s; }
+  @keyframes ripple { 0%{opacity:0.6;transform:scale(0.8)} 100%{opacity:0;transform:scale(1)} }
+
+  .mic-btn {
+    width: 100px; height: 100px; border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.3s; position: relative; z-index: 2;
+    font-size: 2rem;
+  }
+  .mic-btn:hover { border-color: var(--accent); transform: scale(1.05); }
+  .mic-btn.listening {
+    background: rgba(0,229,255,0.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 40px rgba(0,229,255,0.2);
+  }
+  .mic-btn.processing {
+    background: rgba(124,58,237,0.1);
+    border-color: var(--accent2);
+    animation: spin-glow 1s ease-in-out infinite;
+  }
+  @keyframes spin-glow { 0%,100%{box-shadow:0 0 20px rgba(124,58,237,0.3)} 50%{box-shadow:0 0 40px rgba(124,58,237,0.6)} }
+
+  .mic-status {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .mic-status.active { color: var(--accent); }
+  .mic-status.processing { color: var(--accent2); }
+
+  /* TRANSCRIPT */
+  .transcript-box {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem;
+    font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7;
+    color: var(--text); min-height: 100px; max-height: 200px;
+    overflow-y: auto; white-space: pre-wrap;
+  }
+  .transcript-box .placeholder { color: var(--muted); font-style: italic; }
+  .filler-word { background: rgba(245,158,11,0.2); color: var(--accent3); border-radius: 3px; padding: 0 3px; }
+
+  /* TYPE MODE */
+  .type-toggle {
+    display: flex; align-items: center; gap: 0.75rem;
+    font-size: 0.8rem; color: var(--muted); cursor: pointer;
+    font-family: var(--font-mono);
+  }
+  .type-toggle input[type="checkbox"] { accent-color: var(--accent); }
+
+  .text-input-area {
+    width: 100%;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1rem 1.25rem;
+    font-family: var(--font-mono); font-size: 0.9rem; color: var(--text);
+    resize: vertical; min-height: 120px; outline: none; transition: border-color 0.2s;
+  }
+  .text-input-area:focus { border-color: var(--accent); }
+  .text-input-area::placeholder { color: var(--muted); }
+
+  .submit-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; border: none; border-radius: 10px;
+    padding: 0.875rem 2rem; font-size: 0.95rem; font-weight: 700;
+    font-family: var(--font-display); cursor: pointer;
+    transition: all 0.2s; width: 100%;
+  }
+  .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;
+    overflow-y: auto; background: rgba(8,10,15,0.5);
+  }
+
+  .sidebar-section-title {
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem;
+  }
+
+  /* SCORE CARD */
+  .score-grid {
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+
+  .score-row {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .score-label { font-size: 0.8rem; font-weight: 600; width: 90px; flex-shrink: 0; }
+  .score-bar-bg {
+    flex: 1; height: 8px; background: var(--border);
+    border-radius: 4px; overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .score-bar-fill.low { background: var(--red); }
+  .score-bar-fill.mid { background: var(--accent3); }
+  .score-bar-fill.high { background: var(--green); }
+  .score-num {
+    font-family: var(--font-mono); font-size: 0.75rem;
+    color: var(--muted); width: 30px; text-align: right;
+  }
+
+  .overall-score {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem; text-align: center;
+  }
+  .overall-num {
+    font-size: 3rem; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.25rem;
+  }
+  .overall-label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+
+  /* STAR BADGE */
+  .star-badges {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+  }
+  .star-badge {
+    font-size: 0.7rem; font-family: var(--font-mono); letter-spacing: 0.05em;
+    padding: 0.3rem 0.7rem; border-radius: 100px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .star-badge.hit { border-color: var(--green); color: var(--green); background: rgba(16,185,129,0.08); }
+  .star-badge.miss { border-color: var(--border); color: var(--muted); }
+
+  /* FILLER WORDS */
+  .filler-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .filler-chip {
+    background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);
+    color: var(--accent3); font-family: var(--font-mono); font-size: 0.75rem;
+    padding: 0.25rem 0.6rem; border-radius: 100px;
+  }
+
+  /* FEEDBACK */
+  .feedback-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem;
+    font-size: 0.875rem; line-height: 1.7; color: var(--text);
+  }
+  .feedback-card .tip {
+    margin-top: 1rem; padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 0.8rem;
+    color: var(--accent); 
+  }
+  .feedback-card .tip::before { content: '→ TIP: '; }
+
+  /* BOTTOM BAR */
+  .bottom-bar {
+    grid-column: 1/-1;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 2rem;
+    border-top: 1px solid var(--border);
+    background: rgba(8,10,15,0.9); backdrop-filter: blur(20px);
+  }
+  .bottom-bar .session-info {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted);
+  }
+
+  .ghost-btn {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.625rem 1.25rem; font-size: 0.875rem; font-weight: 600;
+    font-family: var(--font-display); cursor: pointer; transition: all 0.2s;
+  }
+  .ghost-btn:hover { border-color: var(--text); }
+
+  .next-btn {
+    background: var(--surface2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.625rem 1.5rem; font-size: 0.875rem; font-weight: 700;
+    font-family: var(--font-display); cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .next-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .next-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ─── REPORT PAGE ─── */
+  .report-page {
+    min-height: 100vh; padding: 3rem 2rem;
+    max-width: 900px; margin: 0 auto;
+    animation: fadeUp 0.6s ease both;
+  }
+  .report-header { margin-bottom: 3rem; }
+  .report-title { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+  .report-title em { font-family: var(--font-serif); font-style: italic; color: var(--accent); }
+  .report-subtitle { color: var(--muted); font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.05em; }
+
+  .readiness-badge {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 2rem;
+  }
+  .readiness-badge .icon { font-size: 1.5rem; }
+  .readiness-badge .label { font-size: 0.75rem; color: var(--green); font-family: var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+  .readiness-badge .value { font-size: 1.1rem; font-weight: 700; color: var(--green); }
+
+  .report-avg { 
+    font-size: 5rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+
+  .report-content {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap;
+    font-family: var(--font-mono);
+  }
+
+  .session-history {
+    display: flex; flex-direction: column; gap: 0.75rem; margin-top: 2rem;
+  }
+  .session-row {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.25rem;
+  }
+  .session-row .q { font-size: 0.85rem; font-weight: 500; }
+  .session-row .s {
+    font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700;
+    color: var(--accent);
+  }
+
+  .restart-btn {
+    background: var(--accent); color: var(--bg);
+    border: none; border-radius: 10px;
+    padding: 0.875rem 2rem; font-size: 0.95rem; font-weight: 700;
+    font-family: var(--font-display); cursor: pointer;
+    transition: all 0.2s; margin-top: 2rem;
+  }
+  .restart-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,229,255,0.3); }
+
+  /* Loading spinner */
+  .spinner {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: var(--accent);
+    animation: spin 0.8s linear infinite; display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 0.75rem;
+    min-height: 200px; color: var(--muted);
+    font-family: var(--font-mono); font-size: 0.85rem; text-align: center;
+  }
+  .empty-state .icon { font-size: 2rem; opacity: 0.4; }
+
+  @media (max-width: 768px) {
+    .practice { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto auto; }
+    .practice-header { grid-column: 1; }
+    .sidebar { border-top: 1px solid var(--border); }
+    .main-panel { border-right: none; }
+    .bottom-bar { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+const API_BASE = 'http://localhost:8000';
+
+const ROLES = [
+  { id: 'Software Engineer', icon: '💻', desc: 'SWE, Backend, Frontend, Full-stack' },
+  { id: 'Product Manager', icon: '🎯', desc: 'PM, APM, Senior PM' },
+  { id: 'Designer', icon: '✏️', desc: 'UX, UI, Product Design' },
+  { id: 'Data Scientist', icon: '📊', desc: 'DS, ML Engineer, Analyst' },
+  { id: 'Marketing', icon: '📣', desc: 'Growth, Content, Brand' },
+];
+
+const QUESTIONS_LOCAL = {
+  'Software Engineer': [
+    "Tell me about yourself and why you want this role.",
+    "Describe a time you debugged a complex production issue.",
+    "How do you handle disagreements with teammates on technical decisions?",
+    "Tell me about a project you're most proud of.",
+    "Describe a time you had to learn a new technology quickly under pressure.",
+  ],
+  'Product Manager': [
+    "Tell me about yourself and your product philosophy.",
+    "How do you decide what to build next?",
+    "Describe a time you shipped a product that failed. What happened?",
+    "How do you work with engineering teams who push back on your roadmap?",
+    "Tell me about a product decision you're most proud of.",
+  ],
+  'Designer': [
+    "Walk me through your design process from brief to delivery.",
+    "Tell me about a design you're most proud of.",
+    "How do you handle feedback that you disagree with?",
+    "Describe a time your design failed and what you learned.",
+    "How do you balance user needs with business constraints?",
+  ],
+  'Data Scientist': [
+    "Tell me about yourself and your approach to data science.",
+    "Describe a model you built that had real business impact.",
+    "How do you communicate findings to non-technical stakeholders?",
+    "Tell me about a time your model performed poorly in production.",
+    "How do you decide which algorithm to use for a problem?",
+  ],
+  'Marketing': [
+    "Tell me about yourself and your marketing philosophy.",
+    "Describe a campaign you ran that exceeded expectations.",
+    "How do you measure the success of a marketing campaign?",
+    "Tell me about a time a campaign flopped. What did you learn?",
+    "How do you approach understanding your target audience?",
+  ],
+};
+
+// ── ScoreBar ──────────────────────────────────────────────────────────────
+function ScoreBar({ label, value }) {
+  const [displayed, setDisplayed] = useState(0);
+  useEffect(() => { setTimeout(() => setDisplayed(value || 0), 100); }, [value]);
+  const pct = (displayed / 10) * 100;
+  const cls = displayed < 4 ? 'low' : displayed < 7 ? 'mid' : 'high';
+  return (
+    <div className="score-row">
+      <div className="score-label">{label}</div>
+      <div className="score-bar-bg">
+        <div className={`score-bar-fill ${cls}`} style={{ width: `${pct}%` }} />
+      </div>
+      <div className="score-num">{displayed > 0 ? `${displayed}/10` : '—'}</div>
+    </div>
+  );
+}
+
+// ── STAR Badges ───────────────────────────────────────────────────────────
+function StarBadges({ star }) {
+  if (!star) return null;
+  const parts = ['situation', 'task', 'action', 'result'];
+  return (
+    <div className="star-badges">
+      {parts.map(p => (
+        <div key={p} className={`star-badge ${star[p] ? 'hit' : 'miss'}`}>
+          {star[p] ? '✓' : '○'} {p.toUpperCase()}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Highlight filler words in transcript ─────────────────────────────────
+function HighlightedTranscript({ text, fillers = [] }) {
+  if (!text) return <span className="placeholder">Your answer will appear here as you speak...</span>;
+  const fillerWords = fillers.map(f => typeof f === 'object' ? f.word : f);
+  if (fillerWords.length === 0) return <span>{text}</span>;
+  const regex = new RegExp(`\\b(${fillerWords.join('|')})\\b`, 'gi');
+  const parts = text.split(regex);
+  return (
+    <>
+      {parts.map((part, i) =>
+        fillerWords.some(w => w.toLowerCase() === part.toLowerCase())
+          ? <span key={i} className="filler-word">{part}</span>
+          : <span key={i}>{part}</span>
+      )}
+    </>
+  );
+}
+
+// ── LANDING PAGE ──────────────────────────────────────────────────────────
+function Landing({ onStart }) {
+  const [selected, setSelected] = useState('');
+  return (
+    <div className="landing">
+      <div className="logo-badge"><span></span> POWERED BY VOXTRAL + MISTRAL LARGE 3</div>
+      <h1 className="hero-title">
+        Your personal<br/>
+        <em>interview coach</em><br/>
+        never sleeps.
+      </h1>
+      <p className="hero-sub">
+        Speak your answer. Get real-time AI coaching on clarity, structure, confidence, and more — powered by Voxtral.
+      </p>
+      <div className="role-grid">
+        {ROLES.map(r => (
+          <div
+            key={r.id}
+            className={`role-card ${selected === r.id ? 'selected' : ''}`}
+            onClick={() => setSelected(r.id)}
+          >
+            <div className="role-icon">{r.icon}</div>
+            <div className="role-name">{r.id}</div>
+            <div className="role-desc">{r.desc}</div>
+          </div>
+        ))}
+      </div>
+      <button className="cta-btn" disabled={!selected} onClick={() => onStart(selected)}>
+        Start Practice Session →
+      </button>
+    </div>
+  );
+}
+
+// ── PRACTICE PAGE ─────────────────────────────────────────────────────────
+function Practice({ role, onFinish }) {
+  const questions = QUESTIONS_LOCAL[role] || QUESTIONS_LOCAL['Software Engineer'];
+  const [qIndex, setQIndex] = useState(0);
+  const [isListening, setIsListening] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [transcript, setTranscript] = useState('');
+  const [typeMode, setTypeMode] = useState(false);
+  const [typedAnswer, setTypedAnswer] = useState('');
+  const [result, setResult] = useState(null);
+  const [allResults, setAllResults] = useState([]);
+  const recognitionRef = useRef(null);
+
+  const question = questions[qIndex];
+
+  const startListening = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) { alert('Speech recognition not supported. Please use Chrome or type your answer.'); return; }
+    
+    const rec = new SpeechRecognition();
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = 'en-US';
+    recognitionRef.current = rec;
+
+    rec.onresult = (e) => {
+      let final = '', interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
+        else interim += e.results[i][0].transcript;
+      }
+      setTranscript(prev => prev + final + interim);
+    };
+
+    rec.start();
+    setIsListening(true);
+    setTranscript('');
+    setResult(null);
+  };
+
+  const stopListening = () => {
+    if (recognitionRef.current) { recognitionRef.current.stop(); }
+    setIsListening(false);
+  };
+
+  const toggleMic = () => {
+    if (isListening) stopListening();
+    else startListening();
+  };
+
+  const analyzeAnswer = async (text) => {
+    setIsProcessing(true);
+    setResult(null);
+    try {
+      const res = await fetch(`${API_BASE}/analysis/text`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transcript: text, question, role })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setResult(data);
+        setAllResults(prev => [...prev, { question, ...data }]);
+      } else {
+        // Fallback demo data when backend unavailable
+        const demo = getDemoResult(text);
+        setResult(demo);
+        setAllResults(prev => [...prev, { question, ...demo }]);
+      }
+    } catch {
+      const demo = getDemoResult(text);
+      setResult(demo);
+      setAllResults(prev => [...prev, { question, ...demo }]);
+    }
+    setIsProcessing(false);
+  };
+
+  const getDemoResult = (text) => {
+    const words = text.split(' ').length;
+    const fillers = ['um', 'uh', 'like', 'you know', 'basically', 'literally'];
+    const foundFillers = fillers.filter(f => text.toLowerCase().includes(f)).map(w => ({ word: w, count: 1 }));
+    const hasSTAR = text.toLowerCase().includes('when') && (text.toLowerCase().includes('decided') || text.toLowerCase().includes('result'));
+    return {
+      feedback: `Great attempt! You covered ${words} words. Your answer shows enthusiasm for the role. Focus on using the STAR method more explicitly — set up the situation first, then walk through your specific actions, and always close with a clear, quantified result.`,
+      scores: {
+        clarity: Math.min(10, 5 + Math.floor(words / 40)),
+        structure: hasSTAR ? 7 : 4,
+        confidence: foundFillers.length < 2 ? 8 : 5,
+        relevance: 6,
+        examples: text.length > 200 ? 7 : 4,
+      },
+      filler_words_detail: foundFillers,
+      star_breakdown: {
+        situation: text.toLowerCase().includes('when') || text.toLowerCase().includes('at my'),
+        task: text.toLowerCase().includes('i had to') || text.toLowerCase().includes('i needed'),
+        action: text.toLowerCase().includes('i ') && text.length > 100,
+        result: text.toLowerCase().includes('result') || text.toLowerCase().includes('achieved') || text.toLowerCase().includes('increased'),
+      },
+      overall: 6,
+      tip: "Always end with a specific, measurable result — numbers make your story 3x more memorable to interviewers.",
+    };
+  };
+
+  const handleSubmit = () => {
+    const text = typeMode ? typedAnswer : transcript;
+    if (!text.trim()) return;
+    if (isListening) stopListening();
+    analyzeAnswer(text);
+  };
+
+  const handleNext = () => {
+    if (qIndex < questions.length - 1) {
+      setQIndex(q => q + 1);
+      setTranscript('');
+      setTypedAnswer('');
+      setResult(null);
+    } else {
+      onFinish(allResults, role);
+    }
+  };
+
+  const micState = isListening ? 'listening' : isProcessing ? 'processing' : '';
+
+  return (
+    <div className="practice">
+      {/* Header */}
+      <header className="practice-header">
+        <div className="brand">Voice<span>Coach</span></div>
+        <div className="progress-track">
+          {questions.map((_, i) => (
+            <div key={i} className={`progress-pip ${i < qIndex ? 'done' : i === qIndex ? 'active' : ''}`} />
+          ))}
+        </div>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--muted)' }}>
+          {role} · Q{qIndex + 1}/{questions.length}
+        </div>
+      </header>
+
+      {/* Main */}
+      <main className="main-panel">
+        {/* Question */}
+        <div className="question-card">
+          <div className="question-label">Interview Question</div>
+          <div className="question-text">{question}</div>
+        </div>
+
+        {/* Mic / Input */}
+        {!typeMode ? (
+          <div className="mic-area">
+            <div className={`mic-ring ${micState}`}>
+              <button className={`mic-btn ${micState}`} onClick={toggleMic} disabled={isProcessing}>
+                {isListening ? '⏹' : isProcessing ? '⚙️' : '🎙'}
+              </button>
+            </div>
+            <div className={`mic-status ${micState}`}>
+              {isListening ? 'LISTENING — click to stop' :
+               isProcessing ? 'ANALYZING YOUR ANSWER...' :
+               'CLICK TO START SPEAKING'}
+            </div>
+
+            {/* Transcript */}
+            <div className="transcript-box" style={{ width: '100%' }}>
+              <HighlightedTranscript
+                text={transcript}
+                fillers={result?.filler_words_detail || []}
+              />
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <textarea
+              className="text-input-area"
+              placeholder="Type your answer here..."
+              value={typedAnswer}
+              onChange={e => setTypedAnswer(e.target.value)}
+            />
+          </div>
+        )}
+
+        {/* Type toggle */}
+        <label className="type-toggle">
+          <input type="checkbox" checked={typeMode} onChange={e => setTypeMode(e.target.checked)} />
+          Prefer to type your answer
+        </label>
+
+        {/* Analyze button */}
+        {(!result && !isListening) && (
+          <button
+            className="submit-btn"
+            onClick={handleSubmit}
+            disabled={isProcessing || (typeMode ? !typedAnswer.trim() : !transcript.trim())}
+          >
+            {isProcessing
+              ? <><span className="spinner" /> Analyzing with Mistral...</>
+              : '→ Get AI Coaching Feedback'}
+          </button>
+        )}
+
+        {/* Feedback */}
+        {result && (
+          <div className="feedback-card" style={{ animation: 'fadeUp 0.5s ease both' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--accent)', marginBottom: '0.75rem', letterSpacing: '0.1em' }}>
+              ALEX THE COACH SAYS
+            </div>
+            {result.feedback}
+            <div className="tip">{result.tip}</div>
+          </div>
+        )}
+      </main>
+
+      {/* Sidebar */}
+      <aside className="sidebar">
+        {/* Overall Score */}
+        {result ? (
+          <>
+            <div>
+              <div className="sidebar-section-title">Overall Score</div>
+              <div className="overall-score">
+                <div className="overall-num">{result.overall}</div>
+                <div className="overall-label">OUT OF 10</div>
+              </div>
+            </div>
+
+            {/* Dimension Scores */}
+            <div>
+              <div className="sidebar-section-title">Dimension Scores</div>
+              <div className="score-grid">
+                {result.scores && Object.entries(result.scores).map(([k, v]) => (
+                  <ScoreBar key={k} label={k.charAt(0).toUpperCase() + k.slice(1)} value={v} />
+                ))}
+              </div>
+            </div>
+
+            {/* STAR */}
+            <div>
+              <div className="sidebar-section-title">STAR Method</div>
+              <StarBadges star={result.star_breakdown} />
+            </div>
+
+            {/* Filler Words */}
+            {result.filler_words_detail && result.filler_words_detail.length > 0 && (
+              <div>
+                <div className="sidebar-section-title">Filler Words Detected</div>
+                <div className="filler-chips">
+                  {result.filler_words_detail.map((f, i) => (
+                    <div key={i} className="filler-chip">
+                      {typeof f === 'object' ? `"${f.word}" ×${f.count}` : `"${f}"`}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Stats */}
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '10px', padding: '1rem' }}>
+              <div className="sidebar-section-title">Answer Stats</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {[
+                  ['Words', `${(typeMode ? typedAnswer : transcript).split(' ').filter(Boolean).length}`],
+                  ['~Duration', `${Math.round((typeMode ? typedAnswer : transcript).split(' ').length * 0.4)}s`],
+                  ['STAR Complete', result.star_breakdown?.complete ? '✓ Yes' : '✗ No'],
+                ].map(([l, v]) => (
+                  <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                    <span style={{ color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>{l}</span>
+                    <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text)' }}>{v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="empty-state">
+            <div className="icon">🎙</div>
+            <div>Record your answer to see<br/>real-time coaching feedback</div>
+          </div>
+        )}
+      </aside>
+
+      {/* Bottom bar */}
+      <footer className="bottom-bar">
+        <div className="session-info">Session · {role}</div>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button className="ghost-btn" onClick={() => { setTranscript(''); setTypedAnswer(''); setResult(null); }}>
+            ↺ Retry
+          </button>
+          <button className="next-btn" onClick={handleNext} disabled={!result}>
+            {qIndex < questions.length - 1 ? 'Next Question →' : 'See Full Report →'}
+          </button>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+// ── REPORT PAGE ──────────────────────────────────────────────────────────
+function Report({ results, role, onRestart }) {
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const generateReport = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/report/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessions: results, role, user_name: 'Candidate' })
+        });
+        if (res.ok) {
+          setReport(await res.json());
+        } else throw new Error();
+      } catch {
+        // Demo fallback
+        const avg = results.reduce((a, r) => a + (r.overall || 5), 0) / results.length;
+        setReport({
+          report: `PERFORMANCE SUMMARY\n\nYou completed ${results.length} practice questions for the ${role} role with an average score of ${avg.toFixed(1)}/10.\n\nSTRENGTHS\n• You showed enthusiasm and engagement throughout\n• Your answers demonstrated relevant domain knowledge\n• You showed willingness to reflect and improve\n\nAREAS FOR IMPROVEMENT\n• Use the STAR method more consistently — set up the Situation, your Task, specific Actions, and measurable Results\n• Reduce filler words ("um", "uh", "like") — record yourself and play it back\n• Add more specific numbers and outcomes to your stories — quantified results are 3x more memorable\n\nACTION PLAN\n• Practice 2-3 stories using STAR for each common question type\n• Record a 2-minute version of your "tell me about yourself" and refine it\n• Prepare 5 strong examples from your experience that can adapt to different questions\n\nREADINESS: ${avg >= 7 ? 'Ready ✓' : avg >= 5 ? 'Almost Ready — keep practicing' : 'Needs More Practice'}`,
+          avg_score: avg,
+          sessions_count: results.length,
+        });
+      }
+      setLoading(false);
+    };
+    generateReport();
+  }, []);
+
+  const avg = results.reduce((a, r) => a + (r.overall || 5), 0) / results.length;
+  const readiness = avg >= 7 ? { label: 'Ready to Interview', color: 'var(--green)', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)', icon: '🎯' }
+                 : avg >= 5 ? { label: 'Almost Ready', color: 'var(--accent3)', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)', icon: '📈' }
+                 : { label: 'Keep Practicing', color: 'var(--red)', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)', icon: '💪' };
+
+  return (
+    <div className="report-page">
+      <div style={{ marginBottom: '1rem', cursor: 'pointer', color: 'var(--muted)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }} onClick={onRestart}>
+        ← Back to start
+      </div>
+      <div className="report-header">
+        <h1 className="report-title">Your <em>coaching</em><br/>report</h1>
+        <div className="report-subtitle">{role} · {results.length} questions answered</div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '2rem', alignItems: 'center', marginBottom: '2.5rem' }}>
+        <div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--muted)', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>AVERAGE SCORE</div>
+          <div className="report-avg">{avg.toFixed(1)}</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--muted)' }}>out of 10</div>
+        </div>
+        <div>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', background: readiness.bg, border: `1px solid ${readiness.border}`, borderRadius: '12px', padding: '1rem 1.5rem' }}>
+            <span style={{ fontSize: '1.5rem' }}>{readiness.icon}</span>
+            <div>
+              <div style={{ fontSize: '0.7rem', color: readiness.color, fontFamily: 'var(--font-mono)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Readiness</div>
+              <div style={{ fontSize: '1rem', fontWeight: '700', color: readiness.color }}>{readiness.label}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Question breakdown */}
+      <div style={{ marginBottom: '2rem' }}>
+        <div className="sidebar-section-title" style={{ marginBottom: '1rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Question Breakdown</div>
+        <div className="session-history">
+          {results.map((r, i) => (
+            <div key={i} className="session-row">
+              <div className="q">{r.question || `Question ${i+1}`}</div>
+              <div className="s">{r.overall || 5}/10</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Full report */}
+      <div style={{ marginBottom: '1rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Full Coaching Report</div>
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>
+          <div className="spinner" style={{ margin: '0 auto 1rem' }} /> Generating your report with Mistral...
+        </div>
+      ) : (
+        <div className="report-content">{report?.report}</div>
+      )}
+
+      <button className="restart-btn" onClick={onRestart}>
+        ↺ Start New Practice Session
+      </button>
+    </div>
+  );
+}
+
+// ── ROOT APP ──────────────────────────────────────────────────────────────
+function App() {
+  const [page, setPage] = useState('landing');
+  const [role, setRole] = useState('');
+  const [results, setResults] = useState([]);
+
+  const handleStart = (selectedRole) => {
+    setRole(selectedRole);
+    setResults([]);
+    setPage('practice');
+  };
+
+  const handleFinish = (allResults, r) => {
+    setResults(allResults);
+    setRole(r);
+    setPage('report');
+  };
+
+  const handleRestart = () => {
+    setPage('landing');
+    setRole('');
+    setResults([]);
+  };
+
+  if (page === 'landing') return <Landing onStart={handleStart} />;
+  if (page === 'practice') return <Practice role={role} onFinish={handleFinish} />;
+  if (page === 'report') return <Report results={results} role={role} onRestart={handleRestart} />;
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>
