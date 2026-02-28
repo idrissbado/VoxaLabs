@@ -213,6 +213,7 @@ function App() {
       // Extract feedback data from response
       const feedbackData = response.data;
       const score = feedbackData.score || 70;
+      const isDemoMode = feedbackData.demo_mode === true;
       
       // Structure feedback for display
       const formattedFeedback = {
@@ -223,13 +224,17 @@ function App() {
         improvements: feedbackData.improvements || [],
         clarity_score: feedbackData.clarity_score || 7,
         structure_score: feedbackData.structure_score || 7,
-        impact_score: feedbackData.impact_score || 7
+        impact_score: feedbackData.impact_score || 7,
+        demo_mode: isDemoMode
       };
       
       setFeedback(formattedFeedback);
       setSessionAnswers([...sessionAnswers, { question: currentQuestion, answer: userAnswer, score: score }]);
       
       logger(`✓ Score: ${score}/100`);
+      if (isDemoMode) {
+        logger(`⚠️ DEMO MODE: Real coaching requires valid MISTRAL_API_KEY on HF Spaces`);
+      }
       if (formattedFeedback.tips) {
         logger(`📝 Tips: ${formattedFeedback.tips.substring(0, 100)}...`);
       }
@@ -277,7 +282,7 @@ function App() {
 
     try {
       setIsPlaying(true);
-      setPlayingFeedback(feedback);
+      logger(`🔊 Playing coach voice for: ${feedback.tips.substring(0, 50)}...`);
 
       const response = await api.post('/tts/speak', {
         text: feedback.tips,
@@ -286,13 +291,41 @@ function App() {
         responseType: 'blob'
       });
 
+      // Check if response is audio or error
+      if (response.data.type !== 'audio/mpeg') {
+        logger(`⚠️ Unexpected response type: ${response.data.type}`);
+        setError('⚠️ Voice synthesis not available. Check ElevenLabs API key on HF Spaces.');
+        setIsPlaying(false);
+        return;
+      }
+
       const audioUrl = URL.createObjectURL(response.data);
       audioPlayerRef.current = new Audio(audioUrl);
-      audioPlayerRef.current.onended = () => setIsPlaying(false);
+      audioPlayerRef.current.onended = () => {
+        setIsPlaying(false);
+        logger('✓ Voice playback complete');
+      };
+      audioPlayerRef.current.onerror = () => {
+        setIsPlaying(false);
+        logger('✗ Audio playback error');
+        setError('Failed to play audio. Your browser may not support audio playback.');
+      };
       audioPlayerRef.current.play();
+      logger('✓ Voice playing...');
     } catch (err) {
-      setError('TTS failed: ' + err.message);
+      logger(`✗ TTS Error: ${err.response?.status} - ${err.response?.data?.detail || err.message}`);
       setIsPlaying(false);
+      
+      // Provide helpful error messages
+      if (err.response?.status === 503) {
+        setError('⚠️ Voice synthesis unavailable. ElevenLabs API not configured.');
+      } else if (err.response?.status === 429) {
+        setError('⚠️ Too many voice requests. Please try again later.');
+      } else if (err.response?.status === 401) {
+        setError('⚠️ ElevenLabs API key invalid. Check HF Spaces settings.');
+      } else {
+        setError('⚠️ Voice synthesis failed: ' + (err.response?.data?.detail || err.message));
+      }
     }
   };
 
@@ -622,6 +655,11 @@ function App() {
 
           {!loading && feedback && (
             <div className="feedback-panel">
+              {feedback.demo_mode && (
+                <div className="demo-mode-banner">
+                  <p>📋 <strong>Demo Mode:</strong> Real coaching requires MISTRAL_API_KEY. <a href="https://console.mistral.ai/" target="_blank" rel="noopener noreferrer">Get an API key</a> and add to HF Spaces settings.</p>
+                </div>
+              )}
               <div className="feedback-header-section">
                 <div className="score-display">
                   <div className="score-circle">

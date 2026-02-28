@@ -35,15 +35,17 @@ class TTSService:
             language: Language code (default: "en")
             
         Returns:
-            Audio bytes in MP3 format
+            Audio bytes in MP3 format, or None if failed
         """
         if not self.client:
-            logger.error("ElevenLabs client not initialized")
+            logger.error("✗ ElevenLabs client not initialized - ELEVENLABS_API_KEY not set")
             return None
             
         try:
             # Use provided voice_id or default
             use_voice_id = voice_id or self.voice_id
+            
+            logger.info(f"🔊 TTS: Generating audio with voice {use_voice_id[:8]}... for text length {len(text)}")
             
             audio = self.client.generate(
                 text=text,
@@ -57,10 +59,24 @@ class TTSService:
                 audio_bytes.write(chunk)
             
             audio_bytes.seek(0)
-            return audio_bytes.getvalue()
+            result = audio_bytes.getvalue()
+            logger.info(f"✓ TTS: Successfully generated {len(result)} bytes of audio")
+            return result
             
         except Exception as e:
-            logger.error(f"TTS Error: {e}")
+            error_msg = str(e)
+            logger.error(f"✗ TTS Error: {error_msg}")
+            
+            # Log specific error types
+            if "401" in error_msg or "Unauthorized" in error_msg:
+                logger.error("✗ 401 UNAUTHORIZED: ELEVENLABS_API_KEY is invalid, expired, or not set correctly")
+            elif "429" in error_msg or "rate" in error_msg.lower():
+                logger.error("✗ 429 RATE LIMITED: Too many requests to ElevenLabs")
+            elif "400" in error_msg or "Invalid request" in error_msg:
+                logger.error(f"✗ 400 BAD REQUEST: Check text or voice parameters")
+            else:
+                logger.error(f"✗ Service error: {error_msg[:100]}")
+            
             return None
     
     async def get_available_voices(self):

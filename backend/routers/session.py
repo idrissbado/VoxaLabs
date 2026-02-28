@@ -160,5 +160,29 @@ async def submit_answer(req: SubmitAnswerRequest):
             "session_id": req.session_id
         }
     except Exception as e:
-        logger.error(f"Error processing answer: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        error_msg = str(e)
+        logger.error(f"❌ Error processing answer: {error_msg}")
+        
+        # If 401 Unauthorized, return demo feedback instead of failing
+        if "401" in error_msg or "Unauthorized" in error_msg:
+            logger.warning("⚠️ 401 Unauthorized - Returning demo feedback. Check MISTRAL_API_KEY.")
+            # Return demo feedback when API fails
+            return {
+                "success": True,
+                "score": 82,
+                "feedback": "Demo Response",
+                "tips": "In a real scenario, this would be personalized AI feedback. To get real coaching, please configure a valid MISTRAL_API_KEY on HF Spaces.",
+                "strengths": ["Good communication", "Clear articulation", "Structured response"],
+                "improvements": ["Add more specific examples", "Include measurable results"],
+                "clarity_score": 8,
+                "structure_score": 8,
+                "impact_score": 8,
+                "filler_words": [],
+                "star_method": {"situation": "mentioned", "task": "mentioned", "action": "partial", "result": "partial"},
+                "session_id": req.session_id,
+                "demo_mode": True
+            }
+        
+        # For other errors, raise with appropriate status
+        logger.error(f"✗ Failed to process answer: {error_msg[:200]}")
+        raise HTTPException(status_code=500, detail=f"Error processing answer: {error_msg[:100]}")
