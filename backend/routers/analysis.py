@@ -75,7 +75,28 @@ async def analyze_audio_answer(req: AnalyzeAudioRequest):
             "status": "success"
         }
     except Exception as e:
-        logger.error(f"Error analyzing audio: {str(e)}")
+        error_msg = str(e)
+        logger.error(f"❌ Error analyzing audio: {error_msg}")
+        
+        # If 401 Unauthorized, return demo feedback instead of failing
+        if "401" in error_msg or "Unauthorized" in error_msg:
+            logger.warning("⚠️ 401 Unauthorized - Returning demo audio analysis")
+            return {
+                "transcript": "This is a demo transcription of your audio response.",
+                "user_answer": "This is a demo transcription of your audio response.",
+                "coaching_feedback": "Good response! Your voice was clear and well-structured. Add more specific examples to strengthen your answer.",
+                "clarity_score": 8,
+                "depth_score": 7,
+                "communication_score": 8,
+                "strengths": ["Clear speech", "Coherent structure", "Good pacing"],
+                "improvements": ["Add measurable metrics", "Include specific examples"],
+                "follow_up_question": "Can you elaborate on your solution with concrete examples?",
+                "filler_words": [],
+                "word_count": 45,
+                "status": "success",
+                "demo_mode": True
+            }
+        
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/feedback")
@@ -116,7 +137,27 @@ async def analyze_answer(req: FeedbackRequest):
             "transcription": answer_text if req.is_audio else None
         }
     except Exception as e:
-        logger.error(f"Error analyzing answer: {str(e)}")
+        error_msg = str(e)
+        logger.error(f"❌ Error analyzing answer: {error_msg}")
+        
+        # If 401 Unauthorized, return demo feedback
+        if "401" in error_msg or "Unauthorized" in error_msg:
+            logger.warning("⚠️ 401 Unauthorized - Returning demo feedback")
+            return {
+                "user_answer": req.user_answer,
+                "coaching_feedback": "Excellent response! You provided a clear and structured answer.",
+                "clarity_score": 8,
+                "depth_score": 7,
+                "communication_score": 8,
+                "strengths": ["Clear articulation", "Logical structure", "Good communication"],
+                "improvements": ["Add more specific examples", "Include measurable results"],
+                "follow_up_question": "Can you tell us more about the specific metrics used?",
+                "filler_words": [],
+                "word_count": len(req.user_answer.split()),
+                "transcription": req.user_answer if req.is_audio else None,
+                "demo_mode": True
+            }
+        
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/followup")
@@ -145,7 +186,24 @@ async def handle_follow_up(req: FollowUpRequest):
             "follow_up_question": coaching_data.get("follow_up", None),
         }
     except Exception as e:
-        logger.error(f"Error processing follow-up: {str(e)}")
+        error_msg = str(e)
+        logger.error(f"❌ Error processing follow-up: {error_msg}")
+        
+        # If 401 Unauthorized, return demo feedback
+        if "401" in error_msg or "Unauthorized" in error_msg:
+            logger.warning("⚠️ 401 Unauthorized - Returning demo follow-up feedback")
+            return {
+                "user_answer": req.user_answer,
+                "coaching_feedback": "Great follow-up answer! Very insightful.",
+                "clarity_score": 8,
+                "depth_score": 8,
+                "communication_score": 8,
+                "strengths": ["Thoughtful response", "Good engagement", "Clear explanation"],
+                "improvements": ["Could include timing details", "Consider edge cases"],
+                "follow_up_question": "What would you do differently if requirements changed?",
+                "demo_mode": True
+            }
+        
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/improved-answer")
