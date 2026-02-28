@@ -249,14 +249,23 @@ function App() {
 
   const nextQuestion = () => {
     if (currentQuestionIndex < allQuestions.length - 1) {
+      logger(`📋 Moving to next question...`);
+      
+      // Reset all states for new question
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setCurrentQuestion(allQuestions[currentQuestionIndex + 1]);
       setUserAnswer('');
       setTranscript('');
       setFeedback(null);
+      setError(null);
       setRecordedAudioUrl(null);
+      setIsRecording(false);
+      setLoading(false);
       setInputMethod('typing');
+      
+      logger(`✅ Ready for question ${currentQuestionIndex + 2} of ${allQuestions.length}`);
     } else {
+      logger(`🏁 Quiz complete! Generating report...`);
       generateReport();
     }
   };
