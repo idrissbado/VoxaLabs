@@ -1,7 +1,12 @@
 # VoxaLab AI - Docker Container for HF Spaces
-# Optimized for faster builds
+# Optimized for faster builds with Whisper support
 
 FROM python:3.11-slim
+
+# Install system dependencies for Whisper (ffmpeg is critical)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
 RUN useradd -m -u 1000 user

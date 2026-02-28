@@ -8,21 +8,31 @@ import tempfile
 from mistralai import Mistral
 
 # Try to import whisper, but make it optional
+WHISPER_AVAILABLE = False
+WHISPER_MODEL = None
+
 try:
     import whisper
     WHISPER_AVAILABLE = True
-    logging.warning("✓ Whisper is available - real audio transcription enabled")
+    logging.warning("✓ Whisper module imported successfully")
     # Preload the base model for faster transcription
     try:
-        WHISPER_MODEL = whisper.load_model("base")
-        logging.warning("✓ Whisper model loaded successfully")
+        logging.warning("Loading Whisper base model... this may take a minute on first run")
+        WHISPER_MODEL = whisper.load_model("base", device="cpu")
+        logging.warning("✓✓✓ WHISPER MODEL LOADED - Real audio transcription is READY ✓✓✓")
     except Exception as e:
-        logging.warning(f"Failed to preload Whisper model: {e}")
-        WHISPER_MODEL = None
-except ImportError:
+        logging.error(f"Failed to preload Whisper model: {e}")
+        logging.warning("Whisper module available but model loading failed - will try on first transcription")
+        WHISPER_AVAILABLE = True  # Module works, just model load failed
+except ImportError as e:
+    logging.error(f"✗ Whisper import failed: {e}")
+    logging.error("Audio transcription will use demo fallback")
     WHISPER_AVAILABLE = False
     WHISPER_MODEL = None
-    logging.warning("Whisper not available - audio transcription will use API fallback")
+except Exception as e:
+    logging.error(f"✗ Unexpected error with Whisper: {e}")
+    WHISPER_AVAILABLE = False
+    WHISPER_MODEL = None
 
 logger = logging.getLogger(__name__)
 
