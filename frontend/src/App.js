@@ -6,7 +6,8 @@ import {
   FiDownload, FiRefreshCw, FiVolume2, FiSettings,
   FiBarChart2, FiTrendingUp, FiCode, FiLayout,
   FiLoader, FiCheckCircle, FiAlertCircle, FiEdit, FiAward,
-  FiTarget, FiZap, FiArrowRight, FiArrowLeft, FiChevronsRight
+  FiTarget, FiZap, FiArrowRight, FiArrowLeft, FiChevronsRight,
+  FiLinkedin, FiUser, FiHome
 } from 'react-icons/fi';
 
 const API_BASE = typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
@@ -274,7 +275,23 @@ function App() {
           <nav className="navbar">
             <div className="nav-brand">
               <FiCode className="ai-icon" />
-              <span>VoiceCoach</span>
+              <span>PrepCoach</span>
+            </div>
+            <div className="nav-links">
+              <button 
+                className="nav-link" 
+                onClick={() => setPage('landing')}
+                title="Home"
+              >
+                <FiHome size={20} />
+              </button>
+              <button 
+                className="nav-link" 
+                onClick={() => setPage('about')}
+                title="About"
+              >
+                <FiUser size={20} />
+              </button>
             </div>
             <div className="nav-language-selector">
               <select 
@@ -604,6 +621,115 @@ function App() {
             <button className="action-button download-button" onClick={() => alert('Download feature coming soon!')}>
               <FiDownload /> Download Report
             </button>
+          </div>
+        </div>
+      )}
+
+      {page === 'about' && (
+        <div className="about-page">
+          <nav className="navbar">
+            <div className="nav-brand">
+              <FiCode className="ai-icon" />
+              <span>PrepCoach</span>
+            </div>
+            <div className="nav-links">
+              <button 
+                className="nav-link" 
+                onClick={() => setPage('landing')}
+                title="Home"
+              >
+                <FiHome size={20} />
+              </button>
+            </div>
+          </nav>
+
+          <div className="about-content">
+            <div className="about-container">
+              <div className="about-profile">
+                <div className="profile-image-wrapper">
+                  <img src="/idriss.png" alt="Idriss Olivier Bado" className="profile-image" />
+                </div>
+                
+                <div className="profile-info">
+                  <h1 className="profile-name">Idriss Olivier Bado</h1>
+                  <p className="profile-title">AI Engineer & PrepCoach Creator</p>
+                  
+                  <div className="profile-bio">
+                    <p>
+                      I'm passionate about leveraging AI and machine learning to revolutionize how people prepare for critical moments in their careers. PrepCoach is built with the belief that everyone deserves access to world-class coaching and personalized feedback.
+                    </p>
+                    <p>
+                      With expertise in full-stack development, AI integration, and product design, I've created PrepCoach to bridge the gap between traditional coaching and cutting-edge AI technology.
+                    </p>
+                  </div>
+
+                  <div className="profile-features">
+                    <div className="feature">
+                      <FiCode size={24} />
+                      <div>
+                        <h3>Full-Stack Development</h3>
+                        <p>React, Python, FastAPI, Machine Learning</p>
+                      </div>
+                    </div>
+                    <div className="feature">
+                      <FiZap size={24} />
+                      <div>
+                        <h3>AI Integration</h3>
+                        <p>Mistral Large 3, Whisper, LangChain</p>
+                      </div>
+                    </div>
+                    <div className="feature">
+                      <FiTarget size={24} />
+                      <div>
+                        <h3>Product Design</h3>
+                        <p>User-centric, scalable platforms</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="profile-cta">
+                    <a 
+                      href="https://www.linkedin.com/in/idriss-olivier-bado/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="linkedin-link"
+                    >
+                      <FiLinkedin size={24} />
+                      <span>Connect on LinkedIn</span>
+                    </a>
+                  </div>
+
+                  <div className="about-mission">
+                    <h2>Our Mission</h2>
+                    <p>
+                      PrepCoach empowers learners and professionals worldwide by providing intelligent, personalized coaching for interviews, career development, exam preparation, and skill training. We believe that preparation should be accessible, engaging, and effective for everyone.
+                    </p>
+                  </div>
+
+                  <div className="about-tech">
+                    <h2>Technology Stack</h2>
+                    <div className="tech-grid">
+                      <div className="tech-item">
+                        <strong>Frontend</strong>
+                        <p>React 18, Tailwind CSS, Web Audio API</p>
+                      </div>
+                      <div className="tech-item">
+                        <strong>Backend</strong>
+                        <p>FastAPI, Python, Uvicorn</p>
+                      </div>
+                      <div className="tech-item">
+                        <strong>AI/ML</strong>
+                        <p>Mistral Large 3, Whisper, LangChain</p>
+                      </div>
+                      <div className="tech-item">
+                        <strong>Deployment</strong>
+                        <p>Docker, Hugging Face Spaces</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
