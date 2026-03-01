@@ -392,7 +392,7 @@ async def generate_improved_answer(
             "why_this_works": result.get("why_this_works", "This approach demonstrates clear problem-solving methodology.")
         }
     except Exception as e:
-        print(f"Error in improvement generation: {str(e)}")
+        logger.error(f"Error generating improvement suggestions: {e}")
         return {
             "improved_answer": "Example: I was tasked with optimizing a database query that was causing system slowdowns...",
             "star_breakdown": {
@@ -457,7 +457,7 @@ async def generate_follow_up_questions(
             "question_focus": result.get("question_focus", ["deeper_context", "decision_making", "impact"])
         }
     except Exception as e:
-        print(f"Error in follow-up generation: {str(e)}")
+        logger.error(f"Error generating follow-up questions: {e}")
         return {
             "followup_questions": [
                 "Walk me through your decision-making process in more detail.",
@@ -538,7 +538,7 @@ async def generate_comprehensive_report(
             "total_questions": num_questions
         }
     except Exception as e:
-        print(f"Error in report generation: {str(e)}")
+        logger.error(f"Error generating report: {e}")
         return {
             "executive_summary": "Solid practice session completed.",
             "overall_assessment": "You've demonstrated good foundational interview skills. With targeted practice on specific areas, you'll be well-prepared.",
