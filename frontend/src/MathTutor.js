@@ -52,6 +52,18 @@ export function MathTutor({ onBack }) {
       setCurrentStep('');
       setStepNumber(1);
       setStepFeedback(null);
+      
+      // Automatically get hint for this problem
+      try {
+        const hintResponse = await api.post('/math/hint', {
+          problem_text: problem,
+          student_progress: 'Just started'
+        });
+        setHint(hintResponse.data);
+        setShowingHint(true);
+      } catch (hintErr) {
+        console.error('Error getting hint:', hintErr);
+      }
     } catch (err) {
       setError('Error: ' + (err.response?.data?.detail || err.message));
       console.error(err);
@@ -87,6 +99,20 @@ export function MathTutor({ onBack }) {
         setStudentSteps([...studentSteps, { number: stepNumber, step: currentStep }]);
         setCurrentStep('');
         setStepNumber(stepNumber + 1);
+        setShowingHint(false); // Hide hint after correct step
+        
+        // Get updated hint for next step
+        try {
+          const progressText = `Completed ${studentSteps.length + 1} steps`;
+          const hintResponse = await api.post('/math/hint', {
+            problem_text: problem,
+            student_progress: progressText
+          });
+          setHint(hintResponse.data);
+          setShowingHint(true);
+        } catch (hintErr) {
+          console.error('Error getting hint:', hintErr);
+        }
       }
     } catch (err) {
       setError('Error validating step: ' + (err.response?.data?.detail || err.message));
@@ -118,26 +144,7 @@ export function MathTutor({ onBack }) {
   };
 
   const requestHint = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const progress = studentSteps.length > 0 
-        ? `Completed ${studentSteps.length} steps: ${studentSteps.map(s => s.step).join('; ')}`
-        : 'Just started';
-
-      const response = await api.post('/math/hint', {
-        problem_text: problem,
-        student_progress: progress
-      });
-
-      setHint(response.data);
-      setShowingHint(true);
-    } catch (err) {
-      setError('Error getting hint: ' + (err.response?.data?.detail || err.message));
-    } finally {
-      setLoading(false);
-    }
+    // No longer needed - hints are automatic after each step
   };
 
   const downloadSolution = async (format) => {
@@ -281,6 +288,38 @@ export function MathTutor({ onBack }) {
               </div>
             </div>
 
+            {showingHint && hint && (
+              <div className="hint-display initial-hint">
+                <div className="hint-header">
+                  <h3>💡 Guidance to Get Started (Level {hint.hint_level}/5)</h3>
+                  <button 
+                    className="close-hint"
+                    onClick={() => setShowingHint(false)}
+                    title="Dismiss hint"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="hint-content">
+                  <p><strong>💭 Hint:</strong> {hint.hint}</p>
+                  <p><strong>🎯 Strategy:</strong> {hint.guidance}</p>
+                  <div className="next-steps">
+                    <strong>📋 Suggested approach:</strong>
+                    <ul>
+                      {hint.next_steps && hint.next_steps.map((step, idx) => (
+                        <li key={idx}>{step}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  {hint.common_error_to_avoid && (
+                    <div className="warning-box">
+                      <strong>⚠️ Common mistake to avoid:</strong> {hint.common_error_to_avoid}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="steps-container">
               <h2>Your Steps</h2>
 
@@ -372,15 +411,6 @@ export function MathTutor({ onBack }) {
                     )}
                   </button>
 
-                  <button
-                    className="hint-button"
-                    onClick={requestHint}
-                    disabled={loading}
-                    title="Get guidance without revealing the answer"
-                  >
-                    💡 Get Hint
-                  </button>
-
                   {studentSteps.length > 0 && (
                     <button
                       className="finish-button"
@@ -399,37 +429,6 @@ export function MathTutor({ onBack }) {
                     <FiRefreshCw /> Start Over
                   </button>
                 </div>
-
-                {showingHint && hint && (
-                  <div className="hint-display">
-                    <div className="hint-header">
-                      <h3>💡 Guidance (Level {hint.hint_level}/5)</h3>
-                      <button 
-                        className="close-hint"
-                        onClick={() => setShowingHint(false)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                    <div className="hint-content">
-                      <p><strong>Hint:</strong> {hint.hint}</p>
-                      <p><strong>Strategy:</strong> {hint.guidance}</p>
-                      <div className="next-steps">
-                        <strong>Suggested approach:</strong>
-                        <ul>
-                          {hint.next_steps && hint.next_steps.map((step, idx) => (
-                            <li key={idx}>{step}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      {hint.common_error_to_avoid && (
-                        <div className="warning-box">
-                          <strong>⚠️ Avoid:</strong> {hint.common_error_to_avoid}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
