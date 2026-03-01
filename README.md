@@ -6,12 +6,12 @@
 ![Python](https://img.shields.io/badge/Python-3.11%2B-green)
 ![React](https://img.shields.io/badge/React-18.2%2B-61DAFB?logo=react)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.134%2B-009688?logo=fastapi)
-![Mistral AI](https://img.shields.io/badge/Mistral%20AI-Large%203-FF6B35)
+![Mistral AI](https://img.shields.io/badge/Mistral%20AI-Large%203%20+%20MathΣtral-FF6B35)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-**AI-Powered Coaching Platform for Technical Interviews & Mathematics Education**
+**AI-Powered Coaching Platform for Technical Interviews & Advanced Mathematics**
 
-[🚀 Live Demo](#live-demo) • [📚 Features](#-features) • [🏗️ Architecture](#-architecture) • [⚡ Quick Start](#-quick-start)
+[🚀 Live Demo](#live-demo) • [📚 Features](#-features) • [🧮 Math Tutor](#-advanced-math-tutor-with-mathstral) • [⚡ Quick Start](#-quick-start)
 
 </div>
 
@@ -19,13 +19,119 @@
 
 ## 📋 Overview
 
-**VoxaLab AI** is a comprehensive full-stack platform powered by **Mistral Large 3** that provides:
+**VoxaLab AI** is a comprehensive full-stack platform powered by **Mistral Large 3** and **MathΣtral** that provides:
 
 ✅ **Interview Coaching** - Real-time AI feedback for technical interview practice  
-✅ **Math Tutoring** - Step-by-step problem solving with validation  
+✅ **Advanced Math Tutoring** - Multi-format problem submission with MathΣtral expertise  
 ✅ **Multi-language Support** - Practice in 6+ languages  
 ✅ **Real-time Feedback** - Instant analysis with visual loading state  
 ✅ **Audio/Voice Integration** - Whisper transcription + ElevenLabs voice synthesis  
+
+---
+
+## 🧮 Advanced Math Tutor (With MathΣtral)
+
+### What is MathΣtral?
+**MathΣtral** (Math-Mistral) is a specialized mathematical reasoning model integrated into the Mistral API. Unlike general-purpose LLMs, MathΣtral is fine-tuned specifically for rigorous mathematical problem-solving with expertise in:
+
+- **Pure Mathematics**: Abstract Algebra, Linear Algebra, Differential Equations, Discrete Math
+- **Applied Mathematics**: Calculus, Probability & Statistics, Physics, Chemistry
+- **Advanced Topics**: Differential Geometry, Real Analysis, Complex Analysis
+
+### Multi-Format Exercise Submission
+
+**Submit problems in ANY format - the system extracts and solves automatically:**
+
+#### 1️⃣ **Type Problem Directly**
+```
+Solve for x: 2x² + 5x - 3 = 0
+```
+
+#### 2️⃣ **Upload Problem as Image (OCR)**
+- 📸 JPG, PNG from phone/camera
+- Automatic Tesseract OCR extraction
+- Perfect for math from textbooks or handwritten work
+
+#### 3️⃣ **Upload PDF Files**
+- 📄 PDF documents with problems
+- Automatic text extraction + OCR fallback for scanned documents
+- Multi-page support
+
+#### 4️⃣ **Upload LaTeX Files**
+- 🔤 `.tex` files with mathematical notation
+- Preserves complex equations and formatting
+- Perfect for academic problems
+
+### Complete Math Tutoring Workflow
+
+```
+User Submission (Any Format)
+         ↓
+[Extract Exercise] → OCR/Parse/Normalize
+         ↓
+[Analyze Problem] → MathΣtral: Topic, Difficulty, Concepts
+         ↓
+[Display Hint] → Automatic pedagogical guidance (non-spoiler)
+         ↓
+[Student Solves] → Step-by-step validation
+         ↓
+[Validate Steps] → MathΣtral: Check algebraic correctness + conceptual understanding
+         ↓
+[Generate Solution] → LaTeX-formatted complete walkthrough
+         ↓
+[Download Solution] → 4 Formats: Markdown, LaTeX, HTML, JSON
+```
+
+### Key Features
+
+| Feature | Details |
+|---------|---------|
+| **Problem Analysis** | MathΣtral classifies topic, difficulty (1-5 stars), required concepts |
+| **Automatic Hints** | 5-level pedagogical hints (avoid spoilers, guide thinking) |
+| **Step Validation** | MathΣtral checks both algebraic correctness + conceptual understanding |
+| **LaTeX Solutions** | Publication-quality mathematical formatting |
+| **Practice Generator** | Creates similar problems for concept mastery |
+| **Multi-Format Download** | Solutions in Markdown, LaTeX, HTML, JSON formats |
+| **OCR + PDF Parsing** | Tesseract OCR + pypdf for image & document extraction |
+| **Error Handling** | 401 API fallback to demo mode (uninterrupted service) |
+
+### Math Tutor Example: Solving Quadratic Equations
+
+**Input Phase:**
+- User uploads photo of: `x² + 5x + 6 = 0`
+- System extracts: "Solve: x² + 5x + 6 = 0"
+
+**MathΣtral Analysis:**
+```json
+{
+  "topic": "Quadratic Equations",
+  "subtopic": "Factoring Method",
+  "difficulty": 2,
+  "required_concepts": ["Factoring", "FOIL", "Zero Product Property"]
+}
+```
+
+**Automatic Hint:**
+```
+💭 Hint: Think about what two numbers multiply to 6 but add to 5...
+🎯 Strategy: Try factoring as (x + ?)(x + ?) = 0
+📋 Steps: 1) Find factor pairs of 6, 2) Check which pair sums to 5, 3) Write factored form
+```
+
+**Solution (LaTeX):**
+```latex
+\begin{align}
+x^2 + 5x + 6 &= 0 \\
+(x + 2)(x + 3) &= 0 \\
+x = -2 \text{ or } x &= -3
+\end{align}
+```
+
+**Download Options:**
+- 📝 **Markdown** - For notes/documents
+- 📐 **LaTeX** - For academic papers
+- 🌐 **HTML** - For web display
+- 📊 **JSON** - For data/automation
 
 ---
 
