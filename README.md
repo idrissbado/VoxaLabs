@@ -1,143 +1,280 @@
-# 🎤 VoxaLab AI - Interview & Math Coaching Platform
+# 🧮 PrepCoach - AI Math Teacher for Africa
 
 <div align="center">
+
+**Bringing World-Class Math Education to Communities Without Qualified Teachers**
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-green)
 ![React](https://img.shields.io/badge/React-18.2%2B-61DAFB?logo=react)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.134%2B-009688?logo=fastapi)
-![Mistral AI](https://img.shields.io/badge/Mistral%20AI-Large%203%20+%20MathΣtral-FF6B35)
-![License](https://img.shields.io/badge/License-MIT-green)
+![MathΣtral](https://img.shields.io/badge/MathΣtral-Expert%20Reasoning-FF6B35)
+![Impact](https://img.shields.io/badge/Impact-Education%20Access-green)
 
-**AI-Powered Coaching Platform for Technical Interviews & Advanced Mathematics**
+**"In Ivory Coast, there are fewer math teachers per 1,000 students than anywhere else in Africa. This changes that."**
 
-[🚀 Live Demo](#live-demo) • [📚 Features](#-features) • [🧮 Math Tutor](#-advanced-math-tutor-with-mathstral) • [⚡ Quick Start](#-quick-start)
+[🚀 Try It Now](#try-it-now) • [📚 How It Works](#-how-it-works) • [🧮 Why MathΣtral](#-why-mathstral-not-just-ai) • [💡 What You Can Do](#-what-students-can-do)
 
 </div>
 
 ---
 
-## 📋 Overview
+## 🎯 The Problem We Solve
 
-**VoxaLab AI** is a comprehensive full-stack platform powered by **Mistral Large 3** and **MathΣtral** that provides:
+**In Ivory Coast:**
+- ❌ Severe shortage of qualified math teachers (1-2 per secondary school)
+- ❌ Students struggle through textbook problems alone with NO guidance
+- ❌ Homework stays incomplete because help isn't available
+- ❌ Students can't understand where they went wrong
+- ❌ Rural areas have virtually zero access to tutoring
+- ❌ Families can't afford private tutors
 
-✅ **Interview Coaching** - Real-time AI feedback for technical interview practice  
-✅ **Advanced Math Tutoring** - Multi-format problem submission with MathΣtral expertise  
-✅ **Multi-language Support** - Practice in 6+ languages  
-✅ **Real-time Feedback** - Instant analysis with visual loading state  
-✅ **Audio/Voice Integration** - Whisper transcription + ElevenLabs voice synthesis  
+**The Result:** Students fail math, drop out, lose opportunities.
 
 ---
 
-## 🧮 Advanced Math Tutor (With MathΣtral)
+## ✨ The Solution: AI Math Teacher Available 24/7
 
-### What is MathΣtral?
-**MathΣtral** (Math-Mistral) is a specialized mathematical reasoning model integrated into the Mistral API. Unlike general-purpose LLMs, MathΣtral is fine-tuned specifically for rigorous mathematical problem-solving with expertise in:
+**PrepCoach is not just an app. It's a qualified math teacher in your pocket:**
 
-- **Pure Mathematics**: Abstract Algebra, Linear Algebra, Differential Equations, Discrete Math
-- **Applied Mathematics**: Calculus, Probability & Statistics, Physics, Chemistry
-- **Advanced Topics**: Differential Geometry, Real Analysis, Complex Analysis
+✅ **Personal Math Tutor** - Available anytime, anywhere (even offline in future versions)  
+✅ **Understands Every Problem Type** - From basic algebra to advanced calculus  
+✅ **Explains, Not Just Answers** - Guides you to discover solutions yourself  
+✅ **Validates Every Step** - Catches mistakes and teaches why they're wrong  
+✅ **Works With Real Problems** - Take a photo, get help immediately  
+✅ **Teaches Interview Skills** - Tech coaching for those pursuing careers  
+✅ **Works in Your Language** - French, English, and more coming  
 
-### Multi-Format Exercise Submission
+---
 
-**Submit problems in ANY format - the system extracts and solves automatically:**
+## 🧮 How It Works: Real Math Teaching
 
-#### 1️⃣ **Type Problem Directly**
-```
-Solve for x: 2x² + 5x - 3 = 0
-```
+### 1. **Submit Any Math Problem - Any Way**
 
-#### 2️⃣ **Upload Problem as Image (OCR)**
-- 📸 JPG, PNG from phone/camera
-- Automatic Tesseract OCR extraction
-- Perfect for math from textbooks or handwritten work
-
-#### 3️⃣ **Upload PDF Files**
-- 📄 PDF documents with problems
-- Automatic text extraction + OCR fallback for scanned documents
-- Multi-page support
-
-#### 4️⃣ **Upload LaTeX Files**
-- 🔤 `.tex` files with mathematical notation
-- Preserves complex equations and formatting
-- Perfect for academic problems
-
-### Complete Math Tutoring Workflow
+**Teachers don't care how you have the problem - neither do we:**
 
 ```
-User Submission (Any Format)
-         ↓
-[Extract Exercise] → OCR/Parse/Normalize
-         ↓
-[Analyze Problem] → MathΣtral: Topic, Difficulty, Concepts
-         ↓
-[Display Hint] → Automatic pedagogical guidance (non-spoiler)
-         ↓
-[Student Solves] → Step-by-step validation
-         ↓
-[Validate Steps] → MathΣtral: Check algebraic correctness + conceptual understanding
-         ↓
-[Generate Solution] → LaTeX-formatted complete walkthrough
-         ↓
-[Download Solution] → 4 Formats: Markdown, LaTeX, HTML, JSON
+📝 Type it:           "Solve: 2x² + 5x - 3 = 0"
+📸 Take a photo:      Photo of textbook/whiteboard problem
+📄 Upload PDF:        Problem set from school
+🔤 Upload LaTeX:      Academic notation with equations
 ```
 
-### Key Features
+**Our system automatically extracts and cleans the problem** - no copying, no retyping.
 
-| Feature | Details |
-|---------|---------|
-| **Problem Analysis** | MathΣtral classifies topic, difficulty (1-5 stars), required concepts |
-| **Automatic Hints** | 5-level pedagogical hints (avoid spoilers, guide thinking) |
-| **Step Validation** | MathΣtral checks both algebraic correctness + conceptual understanding |
-| **LaTeX Solutions** | Publication-quality mathematical formatting |
-| **Practice Generator** | Creates similar problems for concept mastery |
-| **Multi-Format Download** | Solutions in Markdown, LaTeX, HTML, JSON formats |
-| **OCR + PDF Parsing** | Tesseract OCR + pypdf for image & document extraction |
-| **Error Handling** | 401 API fallback to demo mode (uninterrupted service) |
+### 2. **Get Analyzed Like a Real Teacher**
 
-### Math Tutor Example: Solving Quadratic Equations
+PrepCoach reads your problem and identifies:
 
-**Input Phase:**
-- User uploads photo of: `x² + 5x + 6 = 0`
-- System extracts: "Solve: x² + 5x + 6 = 0"
-
-**MathΣtral Analysis:**
 ```json
 {
   "topic": "Quadratic Equations",
-  "subtopic": "Factoring Method",
-  "difficulty": 2,
-  "required_concepts": ["Factoring", "FOIL", "Zero Product Property"]
+  "why_it_matters": "Foundation for algebra, needed for engineering",
+  "what_you_need_to_know": ["Factoring", "FOIL Method", "Zero Product Property"],
+  "difficulty": "Level 2 (Beginner)",
+  "common_student_mistakes": [
+    "Forgetting to set factors to zero",
+    "Wrong sign when factoring",
+    "Not checking solutions"
+  ]
 }
 ```
 
-**Automatic Hint:**
+**A real teacher does this analysis. Now AI does it consistently, instantly.**
+
+### 3. **Get Guided, Not Just Answered**
+
+Here's the key difference from other apps:
+
+❌ **Wrong Way (Most Apps):**
 ```
-💭 Hint: Think about what two numbers multiply to 6 but add to 5...
-🎯 Strategy: Try factoring as (x + ?)(x + ?) = 0
-📋 Steps: 1) Find factor pairs of 6, 2) Check which pair sums to 5, 3) Write factored form
+Student: "Solve 2x² + 5x - 3 = 0"
+App: "The answer is x = 1/2 or x = -3"
+Student: "OK..." [doesn't understand, fails next test]
 ```
 
-**Solution (LaTeX):**
-```latex
-\begin{align}
-x^2 + 5x + 6 &= 0 \\
-(x + 2)(x + 3) &= 0 \\
-x = -2 \text{ or } x &= -3
-\end{align}
+✅ **Right Way (PrepCoach):**
+```
+Student: "Solve 2x² + 5x - 3 = 0"
+Coach: "💭 Think about what two numbers multiply to 6 but add to 5"
+Student: "Hmm... 6 and -1?"
+Coach: "Good try! But they need to add to positive 5. Try again."
+Student: "Oh! 6 and... no wait. -2 and -3?"
+Coach: "Even closer! But you need positive 5. Think positive numbers that multiply to 6."
+Student: "2 and 3!"
+Coach: "Perfect! Now write it as (2x - ?)(x + ?) = 0"
 ```
 
-**Download Options:**
-- 📝 **Markdown** - For notes/documents
-- 📐 **LaTeX** - For academic papers
-- 🌐 **HTML** - For web display
-- 📊 **JSON** - For data/automation
+**You learn by thinking, not by copying.**
+
+### 4. **Validate Every Step You Take**
+
+Unlike homework help sites that just give answers:
+
+```
+Your step:     2x² + 5x - 3 = 0
+               (2x - 1)(x + 3) = 0
+
+Coach checks:  ✓ Algebra correct?
+               ✓ Factoring valid?
+               ✓ Did you use right method?
+               
+Feedback:      "Excellent! You've factored correctly. 
+                This shows you understand FOIL in reverse.
+                Now, what's the next step?"
+```
+
+**Wrong step?**
+```
+Your step:     (2x + 1)(x - 3) = 0
+
+Coach checks:  ✗ Let me verify: (2x + 1)(x - 3) = 2x² - 6x + x - 3 = 2x² - 5x - 3
+               This is NOT your original equation (2x² + 5x - 3)
+               
+Guidance:      "The signs are wrong. Let me ask you:
+                - What two numbers multiply to -6?
+                - Which pair adds to +5?"
+```
+
+**Real teaching: Finding mistakes and helping you fix them.**
+
+### 5. **Download Solutions in Any Format**
+
+When you finish, you get the complete solution:
+
+- **📝 Markdown** - For study notes, easy to share
+- **📐 LaTeX** - For writing essays, reports, theses
+- **🌐 HTML** - For showing friends, posting online
+- **📊 JSON** - For data analysis, tracking progress
 
 ---
 
-## ✨ Key Features
+## 🧠 Why MathΣtral: AI That Actually Understands Math
 
-### 1. Interview Coaching System
+**Problem:** Regular AI (like ChatGPT) is good at language, not math.
+
+- Makes arithmetic errors
+- Suggests wrong approaches
+- Doesn't understand proof structure
+- Fails on advanced topics
+
+**Solution: MathΣtral** - AI specifically trained for mathematics
+
+**What MathΣtral can do:**
+
+✅ Rigorous algebra (catches every error)  
+✅ Calculus (derivatives, integrals, limits)  
+✅ Linear algebra (matrices, eigenvalues)  
+✅ Differential equations (ODEs, PDEs)  
+✅ Abstract algebra (groups, rings, fields)  
+✅ Real/complex analysis (proofs, convergence)  
+✅ Discrete math (combinatorics, graph theory)  
+✅ Statistics (distributions, hypothesis testing)  
+✅ Physics & chemistry math  
+
+**It validates not just algebra, but your mathematical thinking.**
+
+---
+
+## 💡 What Students Can Do
+
+### 📚 Complete Your Homework
+
+```
+Friday Night Homework Due Monday:
+❌ Before: Stuck on problem 5, don't know where to start
+✅ After: Take photo, get guided through solution, understand concept
+
+Result: Complete homework + Actually learn math
+```
+
+### 🧪 Practice Test Preparation
+
+```
+Exam in 2 weeks, 20 topics to cover:
+❌ Before: No one to help check practice problems
+✅ After: Solve practice problems, validate each step, see if you're ready
+
+Result: Better test scores, less anxiety, actual confidence
+```
+
+### 🔍 Understand Where You Failed
+
+```
+Test back: You got it wrong. Why?
+❌ Before: Teacher too busy, classmates don't know, you stay confused
+✅ After: Upload test problem, coach explains exactly where logic went wrong
+
+Result: Learn from mistakes instead of repeating them
+```
+
+### 🚀 Prepare for University
+
+```
+Competitive exam for engineering/medicine:
+❌ Before: No tutors in your town, can't afford them
+✅ After: Thousands of practice problems, unlimited guidance, 24/7
+
+Result: Get into university, change your life
+```
+
+### 💼 Get a Tech Job
+
+```
+Software engineering interview in 2 months:
+❌ Before: No one in your area knows tech interviews
+✅ After: Practice with AI, get scored, improve weak areas
+
+Result: Land job, earn income, support family
+```
+
+---
+
+## 🎓 For Teachers & Educators
+
+**Don't worry - this isn't replacing you. You're too valuable.**
+
+**What teachers can do:**
+
+✅ **Use PrepCoach for homework help** - Students can validate work before submission  
+✅ **Focus on concepts** - Spend class time on understanding, not answering questions  
+✅ **Assign practice** - Students practice unlimited problems with AI validation  
+✅ **Track progress** - See which concepts students struggle with  
+✅ **Free up time** - Reduce time grading routine homework  
+
+**The result:** Teachers focus on teaching. Students actually learn.
+
+---
+
+## 🌍 Impact So Far
+
+**Built by:** Idris Bado, AI Engineer (From Ivory Coast, for Africa)
+
+**Deployed on:** Hugging Face Spaces (Free, always available)
+
+---
+
+## 🚀 Try It Now
+
+Visit: [VoxaLab Hugging Face Spaces](your-hf-link-here)
+
+Or run locally:
+```bash
+git clone https://github.com/idrissbado/VoxaLabs.git
+cd voicecoach-ai/voicecoach-ai
+# See DEPLOY.md for full setup
+```
+
+---
+
+## 📖 Documentation
+
+- [Quick Start Guide](MATH_TUTOR_GUIDE.md) - How to use it
+- [Demo Script](DEMO_SCRIPT.md) - See it in action  
+- [Session Summary](SESSION_SUMMARY.md) - Technical details
+
+---
+
+## 1. Interview Coaching System
 
 #### Core Capabilities
 - **5 Professional Roles** - Backend, Frontend, DevOps, Data Scientist, Product Manager

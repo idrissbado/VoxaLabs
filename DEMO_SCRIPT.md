@@ -1,10 +1,319 @@
-# 🎬 VoxaLab AI - Demo Script for Loom
+# 🎬 PrepCoach Demo - "AI Math Teacher for Africa"
 
-**Duration:** 3-5 minutes | **Audience:** Technical, Product, Educators
+**For: Students, Teachers, Investors, Impact Advocates**  
+**Duration:** 5 minutes | **Goal:** Show how this solves the math education crisis
 
 ---
 
-## 🎯 Demo Flow (Copy-Paste Ready)
+## 🎯 The Problem (0:00-0:30)
+
+> "In Ivory Coast, there are fewer qualified math teachers per student than anywhere in Africa.
+>
+> A student faces Friday homework with no help, no tutor, no one to explain.
+> They get stuck. They give up. They fail.
+>
+> This is the problem we're solving."
+
+*[Show stat on screen or have written]*
+- 1-2 math teachers per secondary school
+- Families can't afford private tutors
+- Rural areas have virtually zero access to help
+- Result: Math failures, missed opportunities, limited futures
+
+---
+
+## ✨ The Solution (0:30-1:00)
+
+> "Meet PrepCoach - an AI math teacher available 24/7, in your pocket, for free.
+>
+> Not just an answer app. A real teacher that:
+> - Understands your problem
+> - Guides you to discover the answer
+> - Validates every step
+> - Explains why mistakes happened
+> - Works with any format: text, photos, PDFs"
+
+---
+
+## 🧮 DEMO PART 1: Multi-Format Problem Submission (1:00-2:15)
+
+### **1.1 Show the Math Tutor Home**
+
+*[Click Math Tutor from dashboard]*
+
+> "Here's PrepCoach. It has two modes - one for interview coaching, one for math.
+> We're focusing on math today because that's where the need is greatest."
+
+### **1.2 Show Input Options**
+
+*[Show the two tabs: "Type Problem" and "Upload"]*
+
+> "Notice two input methods. You can type a problem, or upload it in any format.
+>
+> Why? Because students might:
+> - Have a textbook problem to photograph
+> - Have a PDF handout from school
+> - Have LaTeX from a university document
+> - Just want to type it
+>
+> We handle all of it."
+
+### **1.3 Demo Typing**
+
+*[Type: "Solve for x: 2x² + 5x - 3 = 0"]*
+
+> "Let me start with typing. A simple quadratic equation - the kind students struggle with."
+
+### **1.4 Demo Image Upload (if available)**
+
+*[Or describe:]*
+
+> "Or - imagine a student photographing a textbook problem.
+> They don't have to retype. Our system extracts the text automatically using OCR.
+> Works with JPG, PNG, even blurry phone photos."
+
+### **1.5 Click Start Solving**
+
+*[Click "Start Solving"]*
+
+> "Now watch what happens..."
+
+---
+
+## 🧠 DEMO PART 2: Analysis & Automatic Hints (2:15-3:00)
+
+### **2.1 Show Problem Analysis**
+
+*[Wait for analysis to appear]*
+
+> "The AI analyzes the problem and tells you:
+>
+> - **Topic:** What area of math is this?
+> - **Difficulty:** Is it easy? Hard? Somewhere between?
+> - **What You Need:** What concepts do you need to know?
+> - **First Question:** A starting point to help you think
+>
+> This is what a good teacher does in the first 30 seconds of meeting a problem."
+
+*[Show the analysis panel]*
+
+### **2.2 Show Automatic Hint**
+
+*[Show green hint box]*
+
+> "And notice - a hint appears automatically. But watch: it doesn't give the answer.
+>
+> 💭 It hints at the approach
+> 🎯 It suggests strategy
+> 📋 It breaks it into steps
+> ⚠️ It warns about common mistakes
+>
+> This is teaching. Not just answering."
+
+---
+
+## ✏️ DEMO PART 3: Step-by-Step Solving with Validation (3:00-4:00)
+
+### **3.1 Solve Step 1**
+
+*[Enter first step toward solution]*
+
+> "Now the student works. Let me enter the first step: finding factors.
+>
+> Watch what happens when I submit it..."
+
+### **3.2 Show Step Validation**
+
+*[Show feedback]*
+
+> "The AI checks:
+> - Is the algebra correct?
+> - Is the reasoning sound?
+> - Are you applying the right concepts?
+>
+> If correct: 'Good! Next step...'
+> If wrong: 'Not quite. Think about...' [with hint]
+>
+> Real teachers do this. Now students without teachers can get it."
+
+### **3.3 Complete the Solution**
+
+*[Walk through remaining steps quickly]*
+
+> "As we continue, the hint refreshes for each new step.
+> By the time we finish, the student understands not just the answer - but WHY."
+
+### **3.4 Show Complete Solution**
+
+*[When all steps done]*
+
+> "Here's the complete solution with full explanation.
+> The student now understands quadratic equations - not just the answer."
+
+---
+
+## 💾 DEMO PART 4: Download & Share (4:00-4:30)
+
+### **4.1 Show Download Options**
+
+*[Show 4 download buttons]*
+
+> "Now here's something no other tutoring app does:
+>
+> The student can download this solution in whatever format they need:
+>
+> - **📝 Markdown** - For study notes to share with friends
+> - **📐 LaTeX** - For writing essays and reports
+> - **🌐 HTML** - For posting online or sharing on phone
+> - **📊 JSON** - For data import or tracking progress
+>
+> Different use cases. One system. Complete flexibility."
+
+### **4.2 Click a Download**
+
+*[Demo download]*
+
+> "Watch - one click and they have a professional document.
+> A student can now:
+> - Keep study notes organized
+> - Show their work to teachers
+> - Share with study groups
+> - Include in academic work
+>
+> They have proof they learned it."
+
+---
+
+## 🎓 DEMO PART 5: Why This Matters (4:30-5:00)
+
+> "Let me step back. This is bigger than one homework problem.
+>
+> **Think about a student's week:**
+>
+> Monday: Gets homework
+> Tuesday-Thursday: Stuck on problems, doesn't ask for help (too shy, too embarrassed)
+> Friday: Submits incomplete homework
+> Monday: Gets it back with bad grade, no explanation
+> Result: Repeats same mistakes on test
+>
+> **WITH PrepCoach:**
+>
+> Monday: Gets homework
+> Tuesday-Thursday: Stuck on a problem? Take photo, get helped, understand it
+> Friday: Submits complete homework AND learned the concept
+> Monday: Gets good grade, understands test will be similar
+> Result: Passes test, keeps learning
+>
+> **Multiply this:**
+> - 20 students in a class
+> - 4 math classes per school
+> - 100 schools in a region
+> - Thousands of students actually learning
+>
+> That's lives changed."
+
+---
+
+## 🚀 Closing (5:00+)
+
+> "This isn't perfect AI. But it's:
+> - ✅ Consistent (doesn't have bad days)
+> - ✅ Patient (no judgment)
+> - ✅ Available (24/7)
+> - ✅ Free (no family can't afford it)
+>
+> For a country lacking math teachers, that's transformative.
+>
+> **PrepCoach: AI Math Teacher for Africa**
+>
+> Try it free at [HF link]"
+
+---
+
+## 📋 Demo Checklist
+
+**Before Recording:**
+- [ ] Clear browser cache
+- [ ] Have test problems ready
+- [ ] Test OCR with sample image (or have screenshot)
+- [ ] Check internet (API calls needed)
+- [ ] Position browser for good screen view
+- [ ] Disable notifications
+
+**During Recording:**
+- [ ] Speak clearly and slowly
+- [ ] Pause after key points
+- [ ] Let AI responses fully load
+- [ ] Show all UI elements
+- [ ] Use real examples students face
+- [ ] Show frustration → solution arc
+
+**Key Tone:**
+- Passionate about education impact
+- Clear about the problem being solved
+- Not generic tech demo
+- Show human context (real students, real struggles)
+- End with hope/change
+
+---
+
+## 💡 Key Points to Emphasize
+
+1. **The Real Problem** - Not enough teachers, not generic tutoring
+2. **Guidance Not Answers** - Teaching methodology, not just app
+3. **Any Format Input** - Photos, PDFs, LaTeX - student's convenience
+4. **Step Validation** - Catches mistakes and explains them
+5. **Multi-Format Export** - Flexibility for different use cases
+6. **Available to Everyone** - Free, no barriers to access
+7. **Building in Africa** - For Africa's specific needs
+
+---
+
+## 🎭 Alternative Angles
+
+### **For Teachers:**
+> "This isn't replacing teachers. It's freeing you from answering basic questions so you can focus on teaching concepts that matter."
+
+### **For Parents:**
+> "Your child has homework help 24/7, whether you understand math or not. Success isn't based on family income."
+
+### **For Policy Makers:**
+> "This scales education access without scaling teacher hiring. It's a bridge until we can train enough teachers."
+
+### **For Tech Community:**
+> "This is AI solving a real human problem in underserved regions. Not just another app."
+
+---
+
+## 🎬 Recording Tips
+
+**Pacing:**
+- Slower than natural speech (people pause to absorb)
+- Pause after big ideas (let them sink in)
+- Don't rush through features
+
+**Energy:**
+- High at start (hook)
+- Calm during explanations
+- Enthusiastic about impact
+- Hopeful at end
+
+**Visuals:**
+- Let UI animations play
+- Pause on key screens
+- Zoom in on important parts
+- Show errors and how they're handled
+
+**Multiple Takes:**
+- Record 2-3 times
+- Pick the best one
+- Don't over-edit (authentic is better)
+
+---
+
+**Ready? This isn't just a demo. This is showing how AI can change education in Africa.**
+
+🚀 **Let's go solve this.**
 
 ### **OPENING (0:00-0:15)**
 
