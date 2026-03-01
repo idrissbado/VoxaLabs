@@ -1,6 +1,6 @@
 """
 Adaptive Math Tutor with Step Validation & Reasoning Verification
-Uses Mistral Large 3 for logical consistency checking and pedagogical guidance
+Uses MathΣtral (via Mistral API) for expert mathematical problem solving and pedagogical guidance
 """
 
 import os
@@ -24,32 +24,40 @@ else:
         logger.error(f"✗ Failed to initialize Mistral client: {e}")
         client = None
 
-MATH_TUTOR_SYSTEM = """You are an advanced mathematical reasoning tutor with expertise in:
-- Algebra, Geometry, Trigonometry, Calculus, Linear Algebra
+MATH_TUTOR_SYSTEM = """You are MathΣtral, an expert mathematical reasoning AI specialized in:
+- Algebra, Geometry, Trigonometry, Calculus, Linear Algebra, Differential Equations, Abstract Algebra
 - Problem classification and difficulty assessment
-- Pedagogical guidance and error detection
-- Step-by-step validation of mathematical reasoning
+- Pedagogical guidance and sophisticated error detection
+- Step-by-step validation of mathematical reasoning with deep conceptual understanding
+- Generating clean, publication-quality LaTeX mathematical notation
 
 Your approach:
-1. NEVER solve the problem immediately
-2. Guide students through logical progression
-3. Validate each step for correctness (algebraic and conceptual)
-4. Detect and explain errors without giving solutions
-5. Provide hints that guide toward the answer
-6. Only provide full solution after student completion
+1. NEVER solve the problem immediately in basic contexts
+2. Guide students through logical progression with Socratic method
+3. Validate each step for algebraic AND conceptual correctness
+4. Detect and explain errors without giving solutions prematurely
+5. Provide hints that guide toward the answer without spoiling
+6. Provide full solution ONLY after student completion
+7. When providing hints: consider difficulty level 1-5 (1=beginner, 5=expert)
 
 Output STRICTLY as valid JSON with no markdown formatting or code blocks.
 
 When validating steps:
-- Check algebraic correctness
+- Check algebraic correctness rigorously
 - Detect conceptual misunderstandings
 - Identify common mistake patterns
-- Provide targeted hints
+- Provide targeted pedagogical hints
+- Suggest alternative approaches when applicable
 
 When complete, provide:
-- Clean LaTeX formatted solution
-- Conceptual summary
-- Similar practice problems"""
+- Complete written solution with all steps
+- Clean LaTeX formatted solution (publication quality)
+- Key concepts involved
+- Common mistakes to avoid
+- Conceptual insights
+- Recommended similar practice problems with difficulty levels
+- Mastery score (0.0-1.0) based on student's approach quality
+- Learning insights about the student's mathematical reasoning"""
 
 LATEX_GENERATOR_PROMPT = """You are a LaTeX formatting expert. Convert mathematical solutions into clean, properly formatted LaTeX.
 
@@ -83,7 +91,7 @@ async def analyze_problem(problem_text: str) -> Dict:
             }
         
         response = client.chat.complete(
-            model="mistral-large-latest",
+            model="mathstral-7b",
             messages=[
                 {
                     "role": "system",
@@ -200,7 +208,7 @@ Validate this step and respond with JSON:
 }}"""
 
         response = client.chat.complete(
-            model="mistral-large-latest",
+            model="mathstral-7b",
             messages=[
                 {
                     "role": "system",
@@ -283,7 +291,7 @@ async def generate_solution(problem_text: str, student_solution: str) -> Dict:
             }
         
         response = client.chat.complete(
-            model="mistral-large-latest",
+            model="mathstral-7b",
             messages=[
                 {
                     "role": "system",
@@ -291,25 +299,24 @@ async def generate_solution(problem_text: str, student_solution: str) -> Dict:
                 },
                 {
                     "role": "user",
-                    "content": f"""The student completed this problem:
+                    "content": f"""The student completed this math problem:
 
 PROBLEM: {problem_text}
 
 Student's solution process: {student_solution}
 
-Now provide the complete solution with JSON:
+Generate the COMPLETE mathematical solution with detailed steps and explanations. 
+Output as JSON:
 {{
-  "full_solution": "Complete written solution",
-  "latex_solution": "LaTeX formatted solution with step-by-step work and final answer boxed",
-  "final_answer": "The final answer",
-  "key_concepts": ["concept1", "concept2"],
+  "full_solution": "Complete step-by-step written solution with all work shown",
+  "latex_solution": "Publication-quality LaTeX solution: each step numbered with \\n separators, final answer in \\boxed{{}}",
+  "final_answer": "The concise final answer",
+  "key_concepts": ["concept1", "concept2", "concept3"],
   "common_mistakes": ["mistake1", "mistake2"],
-  "conceptual_summary": ["summary point 1", "summary point 2"],
-  "recommended_exercises": [
-    {{"topic": "Similar topic", "difficulty": "level", "description": "Exercise description"}}
-  ],
+  "conceptual_summary": ["insight1", "insight2"],
+  "recommended_exercises": [{{"topic": "Related topic", "difficulty": 1-5, "description": "similar problem"}}],
   "mastery_score": 0.0-1.0,
-  "learning_insights": "Observations about student's reasoning"
+  "learning_insights": "Observations about the student's mathematical approach"
 }}"""
                 }
             ]
@@ -388,11 +395,11 @@ async def generate_practice_problem(topic: str, difficulty: int) -> Dict:
             }
         
         response = client.chat.complete(
-            model="mistral-large-latest",
+            model="mathstral-7b",
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a mathematics problem generator."
+                    "content": "You are MathΣtral, an expert mathematics problem generator. Generate challenging, well-structured problems."
                 },
                 {
                     "role": "user",
@@ -454,9 +461,9 @@ def format_latex_solution(solution_text: str) -> str:
     Ensure solution is properly formatted as LaTeX.
     """
     try:
-        # Request LaTeX formatting from Mistral
+        # Request LaTeX formatting from MathΣtral
         response = client.chat.complete(
-            model="mistral-large-latest",
+            model="mathstral-7b",
             messages=[
                 {
                     "role": "system",
@@ -477,7 +484,7 @@ def format_latex_solution(solution_text: str) -> str:
 
 async def generate_hint(problem_text: str, student_progress: str = "") -> Dict:
     """
-    Generate a pedagogical hint to guide student toward solution.
+    Generate a pedagogical hint using MathΣtral.
     Does NOT give away the answer.
     """
     try:
@@ -488,28 +495,28 @@ async def generate_hint(problem_text: str, student_progress: str = "") -> Dict:
                 "hint_level": 1,
                 "guidance": "Focus on identifying the key variables and what they represent",
                 "next_steps": ["Identify all given information", "Write down what you need to find", "Recall relevant formulas"],
+                "common_error_to_avoid": "Jumping to the answer without understanding the problem structure",
                 "mode": "demo"
             }
         
-        prompt = f"""Generate a helpful pedagogical hint for this math problem.
+        prompt = f"""Generate a PEDAGOGICAL HINT for this math problem.
+CRITICAL: Do NOT solve or give away the answer!
 
 PROBLEM: {problem_text}
 
-{f'Student progress so far: {student_progress}' if student_progress else ''}
+{f'Student progress so far: {student_progress}' if student_progress else 'Student just started'}
 
-Output as JSON with:
+Output as JSON:
 {{
-  "hint": "A single sentence hint that guides without revealing the answer",
+  "hint": "A guiding sentence that helps without revealing the solution",
   "hint_level": 1-5 (1=very basic, 5=almost there),
-  "guidance": "Brief explanation of the strategy to use",
+  "guidance": "Brief strategy to use",
   "next_steps": ["step1", "step2", "step3"],
   "common_error_to_avoid": "One common mistake students make here"
-}}
-
-IMPORTANT: Never solve the problem. Only guide the thinking process."""
+}}"""
 
         response = client.chat.complete(
-            model="mistral-large-latest",
+            model="mathstral-7b",
             messages=[
                 {
                     "role": "system",
@@ -535,11 +542,11 @@ IMPORTANT: Never solve the problem. Only guide the thinking process."""
         logger.error(f"Error generating hint: {error_msg}")
         if "401" in error_msg or "Unauthorized" in error_msg:
             return {
-                "hint": "Review the problem statement and identify what information is given and what you need to find",
+                "hint": "Review the problem statement carefully and identify what information is given and what you need to find",
                 "hint_level": 2,
-                "guidance": "Start with a diagram or by writing out all known values",
-                "next_steps": ["List all given information", "Identify the target variable", "Look for a relevant formula"],
-                "common_error_to_avoid": "Don't jump to the answer without showing steps",
+                "guidance": "Start by listing all known values and what you're solving for",
+                "next_steps": ["List all given information", "Identify the target variable", "Look for a relevant formula or theorem"],
+                "common_error_to_avoid": "Don't jump to the answer without showing all work",
                 "demo_mode": True
             }
         raise
