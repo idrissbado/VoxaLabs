@@ -125,10 +125,12 @@ if not frontend_build_path.exists():
     alt_path = Path(__file__).parent.parent / "frontend" / "build"
     if alt_path.exists():
         frontend_build_path = alt_path
+        logger.info(f"Found frontend at alternative path: {alt_path}")
     else:
         alt_path2 = Path("/app") / "frontend" / "build"
         if alt_path2.exists():
             frontend_build_path = alt_path2
+            logger.info(f"Found frontend at HF Spaces path: {alt_path2}")
 
 logger.info(f"Looking for frontend build at: {frontend_build_path}")
 logger.info(f"Frontend build exists: {frontend_build_path.exists()}")
@@ -137,10 +139,14 @@ if frontend_build_path.exists():
     static_path = frontend_build_path / "static"
     if static_path.exists():
         # Mount static files
-        app.mount("/static", StaticFiles(directory=static_path), name="static")
-        logger.info(f"✓ Static files mounted from {static_path}")
+        try:
+            app.mount("/static", StaticFiles(directory=str(static_path), check_dir=True), name="static")
+            logger.info(f"✓ Static files mounted successfully from {static_path}")
+        except Exception as e:
+            logger.error(f"Failed to mount static files: {e}")
     else:
         logger.warning(f"Static directory not found at {static_path}")
+        logger.warning(f"Contents of {frontend_build_path}: {list(frontend_build_path.iterdir())}")
     
     # Serve index.html for all other routes (React Router)
     @app.get("/{full_path:path}")
@@ -152,18 +158,23 @@ if frontend_build_path.exists():
         # Serve index.html for all other routes
         index_file = frontend_build_path / "index.html"
         if index_file.exists():
-            return FileResponse(index_file)
-        return {"error": "Frontend not found"}
+            logger.debug(f"Serving index.html for route: {full_path}")
+            return FileResponse(index_file, media_type="text/html")
+        logger.warning(f"index.html not found at {index_file}")
+        return {"error": "Frontend index not found"}
     
     # Serve index.html at root
     @app.get("/")
     async def root():
         index_file = frontend_build_path / "index.html"
         if index_file.exists():
-            return FileResponse(index_file)
+            logger.info("Serving root index.html")
+            return FileResponse(index_file, media_type="text/html")
+        logger.error(f"index.html not found at {index_file}")
         return {"message": "VoxaLab AI Server is running"}
 else:
-    logger.warning(f"Frontend build not found at {frontend_build_path}")
+    logger.error(f"CRITICAL: Frontend build not found at {frontend_build_path}")
+    logger.error(f"Please ensure npm build was run in frontend folder")
     
     @app.get("/")
     async def root():
