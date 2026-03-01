@@ -31,6 +31,41 @@ export function MathTutor({ onBack }) {
   const [hint, setHint] = useState(null);
   const [showingHint, setShowingHint] = useState(false);
   const [downloadFormat, setDownloadFormat] = useState('markdown');
+  const [inputTab, setInputTab] = useState('text'); // 'text', 'file'
+  const [extractedProblem, setExtractedProblem] = useState(null);
+  const [extracting, setExtracting] = useState(false);
+
+  const extractExerciseFromFile = async (file) => {
+    try {
+      setExtracting(true);
+      setError(null);
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await api.post('/math/extract', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.success === false) {
+        setError(response.data.error || 'Failed to extract exercise');
+        return;
+      }
+
+      // Set the extracted problem
+      const extractedText = response.data.cleaned_text || response.data.problems?.[0] || '';
+      setProblem(extractedText);
+      setExtractedProblem(response.data);
+      setInputTab('preview');
+    } catch (err) {
+      setError('Error extracting file: ' + (err.response?.data?.detail || err.message));
+      console.error(err);
+    } finally {
+      setExtracting(false);
+    }
+  };
 
   const analyzeProblem = async () => {
     if (!problem.trim()) {
@@ -220,34 +255,119 @@ export function MathTutor({ onBack }) {
             </div>
 
             <div className="problem-input-section">
-              <label htmlFor="problem-text">Enter your math problem:</label>
-              <textarea
-                id="problem-text"
-                value={problem}
-                onChange={(e) => setProblem(e.target.value)}
-                placeholder="e.g., Solve for x: 2x + 5 = 13"
-                rows="6"
-                className="problem-textarea"
-              />
-
-              <div className="input-hints">
-                <p><strong>Examples:</strong></p>
-                <ul>
-                  <li>Solve for x: 3x - 7 = 20</li>
-                  <li>Find the derivative of f(x) = x³ + 2x</li>
-                  <li>Solve: √(2x) = 4</li>
-                  <li>Factor: x² + 5x + 6</li>
-                </ul>
+              {/* Input tabs */}
+              <div className="input-tabs">
+                <button 
+                  className={`tab-button ${inputTab === 'text' ? 'active' : ''}`}
+                  onClick={() => setInputTab('text')}
+                >
+                  📝 Type Problem
+                </button>
+                <button 
+                  className={`tab-button ${inputTab === 'file' ? 'active' : ''}`}
+                  onClick={() => setInputTab('file')}
+                >
+                  📸 Upload (Image/PDF/LaTeX)
+                </button>
               </div>
+
+              {/* Text input tab */}
+              {inputTab === 'text' && (
+                <>
+                  <label htmlFor="problem-text">Enter your math problem:</label>
+                  <textarea
+                    id="problem-text"
+                    value={problem}
+                    onChange={(e) => setProblem(e.target.value)}
+                    placeholder="e.g., Solve for x: 2x + 5 = 13"
+                    rows="6"
+                    className="problem-textarea"
+                  />
+
+                  <div className="input-hints">
+                    <p><strong>Examples:</strong></p>
+                    <ul>
+                      <li>Solve for x: 3x - 7 = 20</li>
+                      <li>Find the derivative of f(x) = x³ + 2x</li>
+                      <li>Solve: √(2x) = 4</li>
+                      <li>Factor: x² + 5x + 6</li>
+                    </ul>
+                  </div>
+                </>
+              )}
+
+              {/* File upload tab */}
+              {inputTab === 'file' && (
+                <div className="file-upload-section">
+                  <p className="upload-info">Upload a math exercise as an image, PDF, or LaTeX file:</p>
+                  
+                  <div className="file-drop-zone" 
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const file = e.dataTransfer.files[0];
+                      if (file) extractExerciseFromFile(file);
+                    }}
+                  >
+                    <p>📁 Drag and drop here or click to select</p>
+                    <input 
+                      type="file"
+                      accept=".jpg,.jpeg,.png,.pdf,.tex"
+                      onChange={(e) => {
+                        if (e.target.files[0]) {
+                          extractExerciseFromFile(e.target.files[0]);
+                        }
+                      }}
+                      className="file-input"
+                    />
+                    <small>Supported: JPG, PNG (OCR), PDF, LaTeX (.tex)</small>
+                  </div>
+
+                  {extractedProblem && inputTab === 'preview' && (
+                    <div className="extracted-preview">
+                      <h3>✓ Extracted Problem:</h3>
+                      <div className="extracted-text">
+                        {problem}
+                      </div>
+                      <div className="extraction-info">
+                        <small>File: {extractedProblem.filename}</small>
+                        {extractedProblem.confidence && (
+                          <small>Confidence: {(extractedProblem.confidence * 100).toFixed(0)}%</small>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Preview mode */}
+              {extractedProblem && inputTab === 'preview' && (
+                <div className="extraction-buttons">
+                  <button 
+                    className="secondary-button"
+                    onClick={() => {
+                      setExtractedProblem(null);
+                      setProblem('');
+                      setInputTab('file');
+                    }}
+                  >
+                    Try Another File
+                  </button>
+                </div>
+              )}
 
               <button
                 className="submit-button"
                 onClick={analyzeProblem}
-                disabled={loading}
+                disabled={loading || extracting || !problem.trim()}
               >
                 {loading ? (
                   <>
                     <FiLoader className="spinner" /> Analyzing...
+                  </>
+                ) : extracting ? (
+                  <>
+                    <FiLoader className="spinner" /> Extracting...
                   </>
                 ) : (
                   <>

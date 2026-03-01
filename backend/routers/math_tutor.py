@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from services.math_tutor import (
     analyze_problem,
@@ -8,6 +8,7 @@ from services.math_tutor import (
     generate_hint,
     generate_downloadable_solution
 )
+from services.exercise_extractor import extract_exercise
 
 router = APIRouter()
 
@@ -149,6 +150,63 @@ async def download_solution(req: DownloadSolutionRequest):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/extract")
+async def extract_math_exercise(
+    file: UploadFile = File(None),
+    text_input: str = Form(None)
+):
+    """
+    Extract math exercise from multiple formats:
+    - Text: Direct input
+    - Image: JPG, PNG (OCR)
+    - PDF: PDF documents
+    - LaTeX: .tex files
+    """
+    try:
+        # Priority: file upload over text
+        if file:
+            file_bytes = await file.read()
+            filename = file.filename
+            
+            # Detect file type from extension
+            ext = filename.lower().split('.')[-1]
+            file_type_map = {
+                'jpg': 'image', 'jpeg': 'image', 'png': 'image',
+                'pdf': 'pdf',
+                'tex': 'latex', 'latex': 'latex',
+                'txt': 'text'
+            }
+            
+            file_type = file_type_map.get(ext)
+            if not file_type:
+                return {
+                    "success": False,
+                    "error": f"Unsupported file type: {ext}. Supported: image (jpg, png), pdf, latex (.tex), text (.txt)",
+                    "mode": "error"
+                }
+            
+            result = await extract_exercise(file_bytes, filename, file_type)
+            
+        elif text_input:
+            # Direct text input
+            result = await extract_exercise(text_input.encode('utf-8'), "exercise.txt", "text")
+        else:
+            return {
+                "success": False,
+                "error": "Please provide either a file or text input",
+                "mode": "error"
+            }
+        
+        return result
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Error extracting exercise: {str(e)}",
+            "mode": "error"
+        }
 
 
 @router.get("/health")
