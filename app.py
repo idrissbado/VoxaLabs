@@ -119,15 +119,34 @@ async def health():
 
 # Serve React build files
 frontend_build_path = Path(__file__).parent / "frontend" / "build"
+
+# Try alternative paths for HF Spaces
+if not frontend_build_path.exists():
+    alt_path = Path(__file__).parent.parent / "frontend" / "build"
+    if alt_path.exists():
+        frontend_build_path = alt_path
+    else:
+        alt_path2 = Path("/app") / "frontend" / "build"
+        if alt_path2.exists():
+            frontend_build_path = alt_path2
+
+logger.info(f"Looking for frontend build at: {frontend_build_path}")
+logger.info(f"Frontend build exists: {frontend_build_path.exists()}")
+
 if frontend_build_path.exists():
-    # Mount static files
-    app.mount("/static", StaticFiles(directory=frontend_build_path / "static"), name="static")
+    static_path = frontend_build_path / "static"
+    if static_path.exists():
+        # Mount static files
+        app.mount("/static", StaticFiles(directory=static_path), name="static")
+        logger.info(f"✓ Static files mounted from {static_path}")
+    else:
+        logger.warning(f"Static directory not found at {static_path}")
     
     # Serve index.html for all other routes (React Router)
     @app.get("/{full_path:path}")
     async def serve_react(full_path: str):
         # Don't serve react for API routes
-        if full_path.startswith(("api/", "session/", "analysis/", "report/", "tts/", "health", "docs", "openapi.json")):
+        if full_path.startswith(("api/", "session/", "analysis/", "report/", "tts/", "math/", "health", "docs", "openapi.json")):
             return {"error": "Not found"}
         
         # Serve index.html for all other routes
