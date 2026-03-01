@@ -177,9 +177,10 @@ function App() {
       setInputMethod('typing');
       logger('✓ Audio transcribed successfully');
     } catch (err) {
-      logger('✗ Transcription failed: ' + (err.response?.data?.detail || err.message));
-      setError('Audio transcription is currently unavailable. Please type your answer instead.');
-      // Allow user to type answer as fallback
+      // Silently fallback to text input
+      logger('Using text input instead');
+      setInputMethod('typing');
+      setError(null);
     } finally {
       setLoading(false);
     }
@@ -395,7 +396,7 @@ function App() {
               <div className="coaching-modes-grid">
                 <div 
                   className="coaching-mode-card interview-mode"
-                  onClick={() => setPage('landing')}
+                  onClick={() => setSelectedRole(null)}
                 >
                   <div className="mode-icon">🎤</div>
                   <h3>Interview Coach</h3>

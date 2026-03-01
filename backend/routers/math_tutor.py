@@ -8,7 +8,15 @@ from services.math_tutor import (
     generate_solution,
     generate_practice_problem,
     generate_hint,
+    generate_three_pedagogical_hints,
     generate_downloadable_solution
+)
+from services.reasoning_coach import (
+    classify_problem,
+    validate_step as coach_validate_step,
+    generate_adaptive_hint,
+    generate_final_solution,
+    detect_completion
 )
 from services.exercise_extractor import extract_exercise
 
@@ -35,6 +43,209 @@ class SolutionGenerationRequest(BaseModel):
 class PracticeProblemRequest(BaseModel):
     topic: str
     difficulty: int
+
+
+# ============================================================================
+# REASONING COACH MODELS
+# ============================================================================
+
+class ReasoningCoachStartRequest(BaseModel):
+    problem_text: str
+    format_type: str = "text"  # "text" or "pdf_content"
+
+
+class ReasoningCoachStepRequest(BaseModel):
+    session_id: str
+    step_number: int
+    student_answer: str
+    context: Optional[List[Dict]] = None
+
+
+class ReasoningCoachHintRequest(BaseModel):
+    session_id: str
+    step_number: int
+    current_attempt: str
+    hint_level: int = 1
+
+
+class ReasoningCoachRevealRequest(BaseModel):
+    session_id: str
+    steps_history: List[Dict] = []
+
+
+# ============================================================================
+# REASONING COACH ENDPOINTS
+# ============================================================================
+
+@router.post("/reasoning/start")
+async def start_reasoning_session(req: ReasoningCoachStartRequest):
+    """
+    Start an interactive reasoning coaching session.
+    Returns: problem classification and first guiding question.
+    """
+    try:
+        if not req.problem_text or not req.problem_text.strip():
+            return {
+                "success": False,
+                "error": "Problem text is empty",
+                "status": "error"
+            }
+        
+        logger.info(f"Starting reasoning session for problem: {req.problem_text[:100]}...")
+        
+        # Classify the problem
+        classification = await classify_problem(req.problem_text)
+        
+        from datetime import datetime
+        session_id = datetime.now().isoformat()
+        
+        return {
+            "success": True,
+            "status": "session_started",
+            "session_id": session_id,
+            "problem_text": req.problem_text,
+            "classification": {
+                "topic": classification.get("topic", "Mathematics"),
+                "subtopic": classification.get("subtopic", "General"),
+                "difficulty": classification.get("difficulty", 3),
+                "required_concepts": classification.get("required_concepts", []),
+                "estimated_steps": classification.get("solution_steps", 3),
+                "difficulty_badge": f"{classification.get('difficulty', 3)}/5"
+            },
+            "first_question": classification.get("first_question", "What is the type of this problem?"),
+            "hint_level": 1,
+            "coaching_mode": "step_by_step",
+            "next_action": "request_student_answer"
+        }
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"Error starting reasoning session: {error_msg}")
+        return {
+            "success": False,
+            "error": f"Failed to start session: {error_msg}",
+            "status": "error"
+        }
+
+
+@router.post("/reasoning/validate-step")
+async def validate_reasoning_step(req: ReasoningCoachStepRequest):
+    """
+    Validate a student's submitted step.
+    Returns: correctness, error analysis, explanation, next action.
+    """
+    try:
+        logger.info(f"Validating step {req.step_number} for session {req.session_id}")
+        
+        # Get original problem from session (would come from session storage in production)
+        # For now, we'll use the step as context
+        
+        validation = await coach_validate_step(
+            problem_text=req.context[0]['content'] if req.context else "",
+            step_number=req.step_number,
+            student_answer=req.student_answer,
+            context=req.context
+        )
+        
+        return {
+            "success": True,
+            "status": "step_validated",
+            "session_id": req.session_id,
+            "step_number": req.step_number,
+            "student_answer": req.student_answer,
+            "is_correct": validation.get("is_correct", False),
+            "confidence": validation.get("confidence", 0.5),
+            "explanation": validation.get("explanation", ""),
+            "error_type": validation.get("error_type"),
+            "justification": validation.get("justification", ""),
+            "next_action": validation.get("next_action", "request_next_step"),
+            "feedback": {
+                "quality": "excellent" if validation.get("confidence", 0) > 0.9 else "good" if validation.get("confidence", 0) > 0.7 else "needs_work",
+                "is_on_track": validation.get("is_correct", False)
+            }
+        }
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"Error validating step: {error_msg}")
+        return {
+            "success": False,
+            "error": f"Failed to validate step: {error_msg}",
+            "status": "error"
+        }
+
+
+@router.post("/reasoning/hint")
+async def get_adaptive_hint(req: ReasoningCoachHintRequest):
+    """
+    Get an adaptive hint based on hint level.
+    """
+    try:
+        logger.info(f"Generating hint level {req.hint_level} for session {req.session_id}, step {req.step_number}")
+        
+        hint = await generate_adaptive_hint(
+            problem_text="",  # Would come from session
+            step_number=req.step_number,
+            current_attempt=req.current_attempt,
+            hint_level=req.hint_level,
+            context=None
+        )
+        
+        return {
+            "success": True,
+            "status": "hint_provided",
+            "session_id": req.session_id,
+            "step_number": req.step_number,
+            "hint_level": req.hint_level,
+            "hint": hint.get("hint", ""),
+            "guidance": hint.get("guidance", ""),
+            "direction": hint.get("direction", ""),
+            "can_request_higher_level": req.hint_level < 4,
+            "next_hint_level": req.hint_level + 1 if req.hint_level < 4 else 4
+        }
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"Error generating hint: {error_msg}")
+        return {
+            "success": False,
+            "error": f"Failed to generate hint: {error_msg}",
+            "status": "error"
+        }
+
+
+@router.post("/reasoning/reveal-solution")
+async def reveal_full_solution(req: ReasoningCoachRevealRequest):
+    """
+    Generate complete step-by-step solution with LaTeX formatting.
+    """
+    try:
+        logger.info(f"Revealing full solution for session {req.session_id}")
+        
+        solution = await generate_final_solution(
+            problem_text="",  # Would come from session
+            steps_history=req.steps_history
+        )
+        
+        return {
+            "success": True,
+            "status": "solution_revealed",
+            "session_id": req.session_id,
+            "solution": {
+                "steps": solution.get("solution_steps", []),
+                "final_answer": solution.get("final_answer", ""),
+                "final_answer_latex": solution.get("final_answer_latex", ""),
+                "concepts": solution.get("concepts_used", []),
+                "common_mistakes": solution.get("common_mistakes", []),
+                "practice_problems": solution.get("practice_problems", [])
+            },
+            "coaching_session_complete": True
+        }
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"Error revealing solution: {error_msg}")
+        return {
+            "success": False,
+            "error": f"Failed to reveal solution: {error_msg}",
+            "status": "error"
+        }
 
 
 class HintRequest(BaseModel):
@@ -290,8 +501,8 @@ async def submit_exercise(
         # Step 2: Analyze problem (safe - has demo fallback)
         problem_analysis = await analyze_problem(problem_text)
         
-        # Step 3: Generate hints automatically
-        hints_response = await generate_hint(problem_text, user_attempt or "")
+        # Step 3: Generate 3 SPECIFIC pedagogical hints tailored to the problem
+        hints_response = await generate_three_pedagogical_hints(problem_text, user_attempt or "")
         
         # Step 4: Prepare chat context for interactive discussion
         chat_messages = [
@@ -301,7 +512,7 @@ async def submit_exercise(
             },
             {
                 "role": "assistant",
-                "content": f"I see you're working on a {problem_analysis.get('topic', 'math')} problem. {hints_response.get('hint', 'Let me help you work through this step by step.')}"
+                "content": f"I see you're working on a {problem_analysis.get('topic', 'math')} problem. {hints_response.get('hint_1', 'Let me help you work through this step by step.')}"
             }
         ]
         
@@ -318,9 +529,9 @@ async def submit_exercise(
                 "concepts": problem_analysis.get('required_concepts', [])
             },
             "hints": {
-                "hint_1": hints_response.get('hint', 'Start by identifying what you know and what you need to find.'),
-                "hint_2": hints_response.get('guidance', 'Look for patterns or relationships between the given information.'),
-                "hint_3": "Try working through a simpler example first, then apply the same approach.",
+                "hint_1": hints_response.get('hint_1', 'Start by identifying what you know and what you need to find.'),
+                "hint_2": hints_response.get('hint_2', 'Look for patterns or relationships between the given information.'),
+                "hint_3": hints_response.get('hint_3', "Try working through a simpler example first, then apply the same approach."),
                 "pedagogical_hints": hints_response.get('hints_list', [])
             },
             "user_attempt": user_attempt or None,

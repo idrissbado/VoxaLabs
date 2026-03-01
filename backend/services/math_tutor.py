@@ -549,7 +549,93 @@ Output as JSON:
                 "common_error_to_avoid": "Don't jump to the answer without showing all work",
                 "demo_mode": True
             }
-        raise
+        return {
+            "hint": "Think about the structure of the problem and work through it systematically",
+            "hint_level": 1,
+            "guidance": "Break down the problem into manageable parts",
+            "next_steps": ["Understand what's given", "Identify what to find", "Develop a solution strategy"],
+            "common_error_to_avoid": "Rushing without understanding the problem first"
+        }
+
+
+async def generate_three_pedagogical_hints(problem_text: str, user_attempt: str = "") -> Dict:
+    """
+    Generate 3 SPECIFIC pedagogical hints tailored to the actual problem.
+    These hints are problem-specific and guide students step-by-step.
+    """
+    try:
+        if not client:
+            logger.warning("Mistral client not available, using demo hints")
+            return {
+                "hint_1": "Start by identifying what you know and what you need to find.",
+                "hint_2": "Look for patterns or relationships between the given information.",
+                "hint_3": "Try working through a simpler example first, then apply the same approach.",
+                "mode": "demo"
+            }
+        
+        prompt = f"""Generate 3 SPECIFIC PEDAGOGICAL HINTS for this math problem.
+        
+PROBLEM: {problem_text}
+
+{f'Student has attempted: {user_attempt}' if user_attempt else 'Student is just starting'}
+
+Generate 3 progressive hints that:
+1. HINT 1: Identifies the first key step or approach (Foundation)
+2. HINT 2: Guides toward the middle breakthrough (Strategy) 
+3. HINT 3: Leads to near-completion without spoiling (Almost there!)
+
+CRITICAL REQUIREMENTS:
+- Make hints SPECIFIC to THIS problem (not generic!)
+- Each hint builds on the previous one
+- Never give the complete answer
+- Consider mathematical techniques relevant to the problem
+- Include formulas/theorems names when helpful
+- Hints should mention key concepts, not solutions
+
+Output as JSON:
+{{
+  "hint_1": "Specific hint about the first step or technique needed (e.g., 'For summation problems like $\\sum...$, consider induction or telescoping')",
+  "hint_2": "Specific hint about the middle approach (e.g., 'Focus on the pattern in the first few terms')",
+  "hint_3": "Hint about near-completion (e.g., 'Now verify your pattern holds for the general case')"
+}}"""
+
+        response = client.chat.complete(
+            model="mathstral-7b",
+            messages=[
+                {
+                    "role": "system",
+                    "content": MATH_TUTOR_SYSTEM
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        
+        content = response.choices[0].message.content
+        
+        import re
+        json_match = re.search(r'\{.*\}', content, re.DOTALL)
+        if json_match:
+            hints = json.loads(json_match.group())
+            logger.info(f"Generated specific hints for problem: {hints}")
+            return hints
+        
+        hints = json.loads(content)
+        logger.info(f"Generated specific hints for problem: {hints}")
+        return hints
+    
+    except Exception as e:
+        error_msg = str(e)
+        logger.error(f"Error generating pedagogical hints: {error_msg}")
+        # Return fallback generic hints
+        return {
+            "hint_1": "Start by identifying what type of problem this is and what techniques apply.",
+            "hint_2": "Write down the key formulas or theorems that might help.",
+            "hint_3": "Work through the problem step-by-step, checking each step carefully.",
+            "mode": "fallback"
+        }
 
 
 async def generate_downloadable_solution(problem_text: str, solution_data: Dict, format_type: str = "markdown") -> Dict:
