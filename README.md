@@ -1,3 +1,12 @@
+---
+title: VoxaLab - AI Interview Coach & Math Tutor
+emoji: 🎓
+colorFrom: indigo
+colorTo: pink
+sdk: docker
+pinned: false
+---
+
 # 🧮 PrepCoach - AI Math Teacher for Africa
 
 <div align="center">
