@@ -28,6 +28,9 @@ export function MathTutor({ onBack }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [stepNumber, setStepNumber] = useState(1);
+  const [hint, setHint] = useState(null);
+  const [showingHint, setShowingHint] = useState(false);
+  const [downloadFormat, setDownloadFormat] = useState('markdown');
 
   const analyzeProblem = async () => {
     if (!problem.trim()) {
@@ -114,6 +117,55 @@ export function MathTutor({ onBack }) {
     }
   };
 
+  const requestHint = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const progress = studentSteps.length > 0 
+        ? `Completed ${studentSteps.length} steps: ${studentSteps.map(s => s.step).join('; ')}`
+        : 'Just started';
+
+      const response = await api.post('/math/hint', {
+        problem_text: problem,
+        student_progress: progress
+      });
+
+      setHint(response.data);
+      setShowingHint(true);
+    } catch (err) {
+      setError('Error getting hint: ' + (err.response?.data?.detail || err.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const downloadSolution = async (format) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await api.post('/math/download', {
+        problem_text: problem,
+        solution_data: finalSolution,
+        format_type: format
+      });
+
+      const data = response.data;
+      const element = document.createElement('a');
+      const file = new Blob([data.content], { type: data.mime_type });
+      element.href = URL.createObjectURL(file);
+      element.download = data.filename;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    } catch (err) {
+      setError('Error downloading solution: ' + (err.response?.data?.detail || err.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const resetProblem = () => {
     setProblem('');
     setProblemAnalysis(null);
@@ -124,6 +176,8 @@ export function MathTutor({ onBack }) {
     setPhase('input');
     setError(null);
     setStepNumber(1);
+    setHint(null);
+    setShowingHint(false);
   };
 
   return (
@@ -318,6 +372,15 @@ export function MathTutor({ onBack }) {
                     )}
                   </button>
 
+                  <button
+                    className="hint-button"
+                    onClick={requestHint}
+                    disabled={loading}
+                    title="Get guidance without revealing the answer"
+                  >
+                    💡 Get Hint
+                  </button>
+
                   {studentSteps.length > 0 && (
                     <button
                       className="finish-button"
@@ -336,6 +399,37 @@ export function MathTutor({ onBack }) {
                     <FiRefreshCw /> Start Over
                   </button>
                 </div>
+
+                {showingHint && hint && (
+                  <div className="hint-display">
+                    <div className="hint-header">
+                      <h3>💡 Guidance (Level {hint.hint_level}/5)</h3>
+                      <button 
+                        className="close-hint"
+                        onClick={() => setShowingHint(false)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <div className="hint-content">
+                      <p><strong>Hint:</strong> {hint.hint}</p>
+                      <p><strong>Strategy:</strong> {hint.guidance}</p>
+                      <div className="next-steps">
+                        <strong>Suggested approach:</strong>
+                        <ul>
+                          {hint.next_steps && hint.next_steps.map((step, idx) => (
+                            <li key={idx}>{step}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      {hint.common_error_to_avoid && (
+                        <div className="warning-box">
+                          <strong>⚠️ Avoid:</strong> {hint.common_error_to_avoid}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -384,6 +478,48 @@ export function MathTutor({ onBack }) {
             </div>
 
             <div className="solution-actions">
+              <div className="download-section">
+                <label>📥 Download Solution:</label>
+                <div className="download-buttons">
+                  <button
+                    className="download-button"
+                    onClick={() => downloadSolution('markdown')}
+                    disabled={loading}
+                    title="Download as Markdown (.md)"
+                  >
+                    {loading ? <FiLoader className="spinner" /> : <FiDownload />}
+                    Markdown
+                  </button>
+                  <button
+                    className="download-button"
+                    onClick={() => downloadSolution('latex')}
+                    disabled={loading}
+                    title="Download as LaTeX (.tex)"
+                  >
+                    {loading ? <FiLoader className="spinner" /> : <FiDownload />}
+                    LaTeX
+                  </button>
+                  <button
+                    className="download-button"
+                    onClick={() => downloadSolution('html')}
+                    disabled={loading}
+                    title="Download as HTML (.html)"
+                  >
+                    {loading ? <FiLoader className="spinner" /> : <FiDownload />}
+                    HTML
+                  </button>
+                  <button
+                    className="download-button"
+                    onClick={() => downloadSolution('json')}
+                    disabled={loading}
+                    title="Download as JSON (.json)"
+                  >
+                    {loading ? <FiLoader className="spinner" /> : <FiDownload />}
+                    JSON
+                  </button>
+                </div>
+              </div>
+
               <button
                 className="submit-button"
                 onClick={resetProblem}

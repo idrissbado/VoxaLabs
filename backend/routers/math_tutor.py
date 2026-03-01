@@ -4,7 +4,9 @@ from services.math_tutor import (
     analyze_problem,
     validate_step,
     generate_solution,
-    generate_practice_problem
+    generate_practice_problem,
+    generate_hint,
+    generate_downloadable_solution
 )
 
 router = APIRouter()
@@ -29,6 +31,17 @@ class SolutionGenerationRequest(BaseModel):
 class PracticeProblemRequest(BaseModel):
     topic: str
     difficulty: int
+
+
+class HintRequest(BaseModel):
+    problem_text: str
+    student_progress: str = ""
+
+
+class DownloadSolutionRequest(BaseModel):
+    problem_text: str
+    solution_data: dict
+    format_type: str = "markdown"  # markdown, latex, html, json
 
 
 @router.post("/analyze")
@@ -92,6 +105,46 @@ async def get_practice_problem(req: PracticeProblemRequest):
         
         problem = await generate_practice_problem(req.topic, req.difficulty)
         return problem
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/hint")
+async def get_hint(req: HintRequest):
+    """Generate a pedagogical hint to guide student without giving answer."""
+    try:
+        if not req.problem_text.strip():
+            raise HTTPException(status_code=400, detail="Problem text cannot be empty")
+        
+        hint = await generate_hint(req.problem_text, req.student_progress)
+        return hint
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/download")
+async def download_solution(req: DownloadSolutionRequest):
+    """Generate solution in downloadable format (markdown, latex, html, json)."""
+    try:
+        if not req.problem_text.strip():
+            raise HTTPException(status_code=400, detail="Problem text cannot be empty")
+        if not req.solution_data:
+            raise HTTPException(status_code=400, detail="Solution data cannot be empty")
+        
+        valid_formats = ["markdown", "latex", "html", "json"]
+        if req.format_type.lower() not in valid_formats:
+            raise HTTPException(status_code=400, detail=f"Invalid format. Must be one of: {', '.join(valid_formats)}")
+        
+        downloadable = await generate_downloadable_solution(
+            req.problem_text,
+            req.solution_data,
+            req.format_type
+        )
+        return downloadable
     except HTTPException:
         raise
     except Exception as e:
