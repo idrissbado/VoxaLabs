@@ -38,6 +38,14 @@ async def speak(input_data: TextInput):
     
     logger.info(f"Generating speech for language {input_data.language}")
     
+    # Check if TTS service is available
+    if not tts_service.available:
+        logger.warning("TTS service not available - ELEVENLABS_API_KEY may not be configured")
+        raise HTTPException(
+            status_code=503, 
+            detail="Coach voice is not available. Please configure ELEVENLABS_API_KEY on HuggingFace Spaces settings."
+        )
+    
     try:
         audio_bytes = await tts_service.speak(
             input_data.text, 
@@ -52,12 +60,14 @@ async def speak(input_data: TextInput):
                 headers={"Content-Disposition": "attachment; filename=audio.mp3"}
             )
         else:
-            logger.warning("TTS service returned None - returning error response")
-            raise HTTPException(status_code=503, detail="TTS service unavailable. Check ELEVENLABS_API_KEY.")
+            logger.warning("TTS service returned None - check ELEVENLABS_API_KEY")
+            raise HTTPException(status_code=503, detail="TTS service unavailable. Check ELEVENLABS_API_KEY configuration.")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"TTS Error: {str(e)}")
-        if "401" in str(e) or "Unauthorized" in str(e):
-            raise HTTPException(status_code=503, detail="TTS API key invalid. Check ELEVENLABS_API_KEY settings.")
+        if "401" in str(e) or "Unauthorized" in str(e) or "authentication" in str(e).lower():
+            raise HTTPException(status_code=503, detail="TTS API key invalid. Verify ELEVENLABS_API_KEY is set correctly on HF Spaces.")
         elif "rate" in str(e).lower():
             raise HTTPException(status_code=429, detail="Rate limited. Please try again later.")
         else:
@@ -66,5 +76,8 @@ async def speak(input_data: TextInput):
 @router.get("/voices")
 async def get_voices():
     """Get available TTS voices"""
+    if not tts_service.available:
+        return {"voices": [], "message": "ELEVENLABS_API_KEY not configured"}
+    
     voices = await tts_service.get_available_voices()
     return {"voices": voices}

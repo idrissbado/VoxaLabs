@@ -287,6 +287,22 @@ function App() {
     }
   };
 
+  const getScoreLabel = (score) => {
+    if (score >= 85) return '🌟 Excellent';
+    if (score >= 70) return '👍 Good';
+    if (score >= 50) return '⚠️ Fair';
+    if (score >= 30) return '❌ Bad';
+    return '💔 Poor';
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 85) return '#10b981'; // Green
+    if (score >= 70) return '#3b82f6'; // Blue
+    if (score >= 50) return '#f59e0b'; // Amber
+    if (score >= 30) return '#ef4444'; // Red
+    return '#991b1b'; // Dark Red
+  };
+
   const playCoachVoice = async () => {
     if (!feedback?.tips) return;
 
@@ -670,14 +686,14 @@ function App() {
                   <p>📋 <strong>Demo Mode:</strong> Real coaching requires MISTRAL_API_KEY. <a href="https://console.mistral.ai/" target="_blank" rel="noopener noreferrer">Get an API key</a> and add to HF Spaces settings.</p>
                 </div>
               )}
-              <div className="feedback-header-section">
+              <div className="feedback-header-section" style={{ borderLeftColor: getScoreColor(feedback.score) }}>
                 <div className="score-display">
-                  <div className="score-circle">
+                  <div className="score-circle" style={{ background: `linear-gradient(135deg, ${getScoreColor(feedback.score)} 0%, ${getScoreColor(feedback.score)}dd 100%)` }}>
                     <span className="score-number">{Math.round(feedback.score)}</span>
                     <span className="score-max">/100</span>
                   </div>
                   <div className="score-info">
-                    <h3>{feedback.feedback}</h3>
+                    <h3>{getScoreLabel(feedback.score)}</h3>
                     <p className="score-label">Performance Rating</p>
                   </div>
                 </div>

@@ -18,12 +18,22 @@ class TTSService:
         """Initialize ElevenLabs client"""
         api_key = os.getenv("ELEVENLABS_API_KEY")
         if not api_key:
-            logger.warning("ELEVENLABS_API_KEY not set - TTS disabled")
+            logger.warning("⚠️  ELEVENLABS_API_KEY not set - Coach voice feature will be unavailable")
+            logger.warning("📝 To enable: Set ELEVENLABS_API_KEY in environment variables")
             self.client = None
+            self.available = False
             return
         
-        self.client = ElevenLabs(api_key=api_key)
-        self.voice_id = os.getenv("ELEVENLABS_VOICE_ID", "EXAVITQu4vr4xnSDxMaL")
+        try:
+            self.client = ElevenLabs(api_key=api_key)
+            self.voice_id = os.getenv("ELEVENLABS_VOICE_ID", "EXAVITQu4vr4xnSDxMaL")
+            self.available = True
+            logger.info("✓ ElevenLabs TTS service initialized successfully")
+            logger.info(f"  Voice ID: {self.voice_id[:8]}...")
+        except Exception as e:
+            logger.error(f"✗ Failed to initialize ElevenLabs client: {e}")
+            self.client = None
+            self.available = False
         
     async def speak(self, text: str, voice_id: str = None, language: str = "en") -> bytes:
         """
@@ -39,6 +49,10 @@ class TTSService:
         """
         if not self.client:
             logger.error("✗ ElevenLabs client not initialized - ELEVENLABS_API_KEY not set")
+            return None
+        
+        if not self.available:
+            logger.error("✗ ElevenLabs service not available")
             return None
             
         try:
@@ -68,10 +82,11 @@ class TTSService:
             logger.error(f"✗ TTS Error: {error_msg}")
             
             # Log specific error types
-            if "401" in error_msg or "Unauthorized" in error_msg:
+            if "401" in error_msg or "Unauthorized" in error_msg or "authentication" in error_msg.lower():
                 logger.error("✗ 401 UNAUTHORIZED: ELEVENLABS_API_KEY is invalid, expired, or not set correctly")
+                logger.error("   Check: https://elevenlabs.io/app/api-keys")
             elif "429" in error_msg or "rate" in error_msg.lower():
-                logger.error("✗ 429 RATE LIMITED: Too many requests to ElevenLabs")
+                logger.error("✗ 429 RATE LIMITED: Too many requests to ElevenLabs - please wait and try again")
             elif "400" in error_msg or "Invalid request" in error_msg:
                 logger.error(f"✗ 400 BAD REQUEST: Check text or voice parameters")
             else:
@@ -81,7 +96,7 @@ class TTSService:
     
     async def get_available_voices(self):
         """Get list of available voices"""
-        if not self.client:
+        if not self.client or not self.available:
             return []
             
         try:
