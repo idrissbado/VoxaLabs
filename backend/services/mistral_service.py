@@ -230,14 +230,46 @@ async def generate_coaching_feedback(
     Returns:
         Dict with scores, feedback, and coaching tips
     """
+    # Helper function to calculate dynamic demo score
+    def calculate_dynamic_score(answer_text: str) -> int:
+        """Calculate a dynamic demo score based on answer quality indicators."""
+        score = 3  # Base score
+        
+        # Bonus for length (well-developed answer)
+        if len(answer_text.split()) > 50:
+            score += 2
+        if len(answer_text.split()) > 100:
+            score += 1
+            
+        # Bonus for numbers and metrics
+        if any(char.isdigit() for char in answer_text):
+            score += 2
+            
+        # Bonus for STAR method indicators
+        if any(word in answer_text.lower() for word in ['because', 'first', 'then', 'result', 'impact', 'improve']):
+            score += 1.5
+            
+        # Bonus for structured thinking words
+        if any(word in answer_text.lower() for word in ['approach', 'strategy', 'decision', 'trade-off', 'consider']):
+            score += 1
+            
+        # Bonus for technical depth indicators
+        if any(word in answer_text.lower() for word in ['algorithm', 'database', 'api', 'architecture', 'optimize', 'performance']):
+            score += 1
+        
+        # Cap at reasonable maximum for demo
+        return min(int(score), 9)
+    
     try:
         if coaching_chain is None:
-            logger.warning("⚠️ Coaching chain not initialized - returning default feedback")
+            logger.warning("⚠️ Coaching chain not initialized - using dynamic demo scoring")
+            demo_score = calculate_dynamic_score(answer)
+            
             return {
-                "clarity_score": 7,
-                "structure_score": 7,
-                "impact_score": 7,
-                "overall_score": 7,
+                "clarity_score": demo_score - 1 if demo_score > 1 else 3,
+                "structure_score": demo_score,
+                "impact_score": demo_score - 1 if demo_score > 2 else 2,
+                "overall_score": demo_score,
                 "key_strengths": ["Good effort", "Clear communication"],
                 "areas_for_improvement": ["Add more specific examples", "Quantify outcomes"],
                 "coaching_tip": "Great start! Try adding specific metrics to strengthen your answer.",
@@ -287,12 +319,14 @@ async def generate_coaching_feedback(
         elif "Invalid request" in error_msg or "Bad request" in error_msg:
             logger.error("✗ Bad request: Check the request format and parameters")
         
-        # Return sensible defaults if LLM call fails
+        # Use dynamic demo score on error
+        demo_score = calculate_dynamic_score(answer)
+        
         return {
-            "clarity_score": 7,
-            "structure_score": 7,
-            "impact_score": 7,
-            "overall_score": 7,
+            "clarity_score": demo_score - 1 if demo_score > 1 else 3,
+            "structure_score": demo_score,
+            "impact_score": demo_score - 1 if demo_score > 2 else 2,
+            "overall_score": demo_score,
             "key_strengths": ["Clear communication", "Good pacing"],
             "areas_for_improvement": ["Add quantifiable metrics", "Provide more context"],
             "coaching_tip": "Solid answer! Consider adding specific numbers and timelines to make it even stronger.",
