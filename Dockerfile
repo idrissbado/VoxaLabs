@@ -1,6 +1,24 @@
 # VoxaLab AI - Docker Container for HF Spaces
 # Optimized for faster builds with Whisper support
 
+FROM node:18-alpine AS frontend-builder
+
+WORKDIR /frontend
+
+# Copy frontend source
+COPY frontend/package*.json ./
+RUN npm ci
+
+# Copy source code
+COPY frontend/public ./public
+COPY frontend/src ./src
+
+# Build frontend
+RUN npm run build
+
+# ==========================================
+# Main Python application stage
+# ==========================================
 FROM python:3.11-slim
 
 # Install system dependencies for Whisper (ffmpeg is critical)
@@ -30,8 +48,8 @@ RUN pip install --upgrade pip && \
 # Copy backend code
 COPY --chown=user backend/ /app/backend/
 
-# Copy frontend build (pre-built React static files)
-COPY --chown=user frontend/build/ /app/frontend/build/
+# Copy frontend build from builder stage
+COPY --from=frontend-builder /frontend/build /app/frontend/build/
 
 # Copy main app.py
 COPY --chown=user app.py /app/app.py
