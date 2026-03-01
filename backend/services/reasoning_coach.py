@@ -141,6 +141,8 @@ async def validate_step(
         if context:
             context_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in context[-3:]])
         
+        context_section = f"CONTEXT SO FAR:\n{context_text}" if context_text else ""
+        
         prompt = f"""You are validating a student's work on a math problem.
 
 PROBLEM: {problem_text}
@@ -150,7 +152,7 @@ STEP NUMBER: {step_number}
 STUDENT'S ANSWER/WORK:
 {student_answer}
 
-{f'CONTEXT SO FAR:\\n{context_text}' if context_text else ''}
+{context_section}
 
 Validate this step:
 1. Is it mathematically correct? (yes/no)
