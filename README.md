@@ -7,55 +7,311 @@ sdk: docker
 pinned: false
 ---
 
-# 🧮 PrepCoach - AI Math Teacher for Africa
+# 🎓 VoxaLab - AI Interview Coach & Math Tutor
 
 <div align="center">
 
-**Bringing World-Class Math Education to Communities Without Qualified Teachers**
+**Comprehensive AI-Powered Education Platform for Career Preparation and Math Mastery**
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Python](https://img.shields.io/badge/Python-3.11%2B-green)
+![Python](https://img.shields.io/badge/Python-3.12%2B-green)
 ![React](https://img.shields.io/badge/React-18.2%2B-61DAFB?logo=react)
-![MathΣtral](https://img.shields.io/badge/MathΣtral-Expert%20Reasoning-FF6B35)
-![Impact](https://img.shields.io/badge/Impact-Education%20Access-green)
+![Mistral](https://img.shields.io/badge/Mistral-AI%20Engine-FF6B35)
+![Features](https://img.shields.io/badge/Features-Interview%20%2B%20Math-green)
 
-**"In Ivory Coast, there are fewer math teachers per 1,000 students than anywhere else in Africa. This changes that."**
+**"Master Your Skills: Tech Interview Preparation + Advanced Math Tutoring in One Platform"**
 
-[🚀 Try It Now](#try-it-now) • [📚 How It Works](#-how-it-works) • [🧮 Why MathΣtral](#-why-mathstral-not-just-ai) • [💡 What You Can Do](#-what-students-can-do)
-
-</div>
+[🚀 Try It Now](#try-it-now) • [📋 All Features](#-platform-features) • [🏗️ System Architecture](#-system-architecture) • [🤖 AI Capabilities](#-ai-powered-engines)</div>
 
 ---
 
-## 🎯 The Problem We Solve
+## 🎯 Platform Overview
 
-**In Ivory Coast:**
-- ❌ Severe shortage of qualified math teachers (1-2 per secondary school)
-- ❌ Students struggle through textbook problems alone with NO guidance
-- ❌ Homework stays incomplete because help isn't available
-- ❌ Students can't understand where they went wrong
-- ❌ Rural areas have virtually zero access to tutoring
-- ❌ Families can't afford private tutors
+VoxaLab is a comprehensive AI education platform with **two core modules:**
 
-**The Result:** Students fail math, drop out, lose opportunities.
+### **Module 1: 🎤 Interview Coaching System**
+Real-time AI-powered technical interview practice with live feedback and performance analytics.
+
+### **Module 2: 📐 Advanced Math Tutoring System**  
+Step-by-step mathematical reasoning coach with problem-specific guidance and interactive validation.
 
 ---
 
-## ✨ The Solution: AI Math Teacher Available 24/7
+## 📋 Platform Features
 
-**PrepCoach is not just an app. It's a qualified math teacher in your pocket:**
+### **Interview Coaching Module**
 
-✅ **Personal Math Tutor** - Available anytime, anywhere (even offline in future versions)  
-✅ **Understands Every Problem Type** - From basic algebra to advanced calculus  
-✅ **Explains, Not Just Answers** - Guides you to discover solutions yourself  
-✅ **Validates Every Step** - Catches mistakes and teaches why they're wrong  
-✅ **Works With Real Problems** - Take a photo, get help immediately  
-✅ **Teaches Interview Skills** - Tech coaching for those pursuing careers  
-✅ **Works in Your Language** - French, English, and more coming  
+**1. Interview Practice Simulation**
+- ✅ Realistic tech interview questions across multiple domains
+- ✅ Real-time answer transcription (Whisper AI)
+- ✅ Support for audio input or text typing
+- ✅ Multi-language support (English, French, more)
+
+**2. AI Coaching Engine**
+- ✅ Live feedback on interview answers
+- ✅ Strength/weakness analysis
+- ✅ Personalized improvement suggestions
+- ✅ Performance scoring system
+- ✅ Comparison with industry benchmarks
+
+**3. Session Management**
+- ✅ Session state tracking
+- ✅ Answer history preservation
+- ✅ Progress tracking across multiple interviews
+- ✅ Session-based coaching tips
+
+**4. Report Generation**
+- ✅ Comprehensive performance reports
+- ✅ Detailed score breakdown
+- ✅ Specific areas for improvement
+- ✅ Recommended practice topics
+- ✅ Export-ready analysis
 
 ---
 
-## 🧮 How It Works: Real Math Teaching
+### **Math Tutoring Module**
+
+**1. Multi-Format Problem Input**
+- ✅ Type math problems as text
+- ✅ Upload problem photos (OCR extraction)
+- ✅ Submit PDF files
+- ✅ LaTeX notation support
+- ✅ Auto-parsing and problem normalization
+
+**2. Problem Classification & Analysis**
+- ✅ Intelligent topic classification (Algebra, Calculus, Geometry, etc.)
+- ✅ Difficulty assessment (1-5 scale)
+- ✅ Required concepts identification
+- ✅ Prerequisite skill detection
+- ✅ Solution complexity estimation
+
+**3. Interactive Step-by-Step Coaching**
+- ✅ Problem classification with guided first question
+- ✅ Student step validation with error detection
+- ✅ Error type categorization (algebraic, logical, conceptual, notation)
+- ✅ Confidence scoring for validations
+- ✅ Detailed justification for each feedback
+
+**4. Adaptive Hint System (4-Level)**
+- ✅ **Level 1 - Nudge**: Small guidance without revealing approach
+- ✅ **Level 2 - Concept**: Key theorem/formula reminder
+- ✅ **Level 3 - Structure**: Logical breakdown of solution path
+- ✅ **Level 4 - Reveal**: Near-complete step guidance
+- ✅ Context-aware hints tailored to student's specific attempt
+
+**5. Solution Generation**
+- ✅ Complete step-by-step solutions
+- ✅ LaTeX-formatted equations
+- ✅ Concept explanations for each step
+- ✅ Common mistakes to avoid
+- ✅ Similar practice problems
+- ✅ Prerequisites and advanced topics
+
+**6. Progress Tracking**
+- ✅ Completion detection
+- ✅ Progress percentage calculation
+- ✅ Step history tracking
+- ✅ Solution attempt logging
+- ✅ Learning analytics
+
+---
+
+## 🏗️ System Architecture
+
+### Backend Architecture (FastAPI + Mistral AI)
+```
+┌─────────────────────────────────────┐
+│   Frontend (React + Audio/Video)    │
+├─────────────────────────────────────┤
+│      REST API (FastAPI on 7860)     │
+├─────────────────────────────────────┤
+│  ┌────────┬──────────┬───────────┐  │
+│  │Session │Interview │Math Tutor │  │
+│  │Router  │Router    │Router     │  │
+│  └────────┴──────────┴───────────┘  │
+├─────────────────────────────────────┤
+│  ┌────────┬──────────┬───────────┐  │
+│  │Mistral │Whisper   │Analysis   │  │
+│  │Service │Transcribe│Service    │  │
+│  └────────┴──────────┴───────────┘  │
+├─────────────────────────────────────┤
+│   AI Engines:                       │
+│   • Mistral mathstral-7b (Math)    │
+│   • Whisper (Audio Transcription)  │
+└─────────────────────────────────────┘
+```
+
+### Frontend Architecture (React Components)
+```
+App (Main Router)
+├── Home (Landing Page)
+├── InterviewCoach
+│   ├── QuestionDisplay
+│   ├── AnswerRecorder (Audio/Text)
+│   ├── FeedbackDisplay
+│   └── ProgressTracker
+├── MathTutor
+│   ├── ProblemInput (Multi-format)
+│   ├── ProblemClassification
+│   ├── StepValidator
+│   ├── HintGenerator
+│   ├── SolutionDisplay
+│   └── ConversationHistory
+└── Reports (Analytics & Insights)
+```
+
+---
+
+## 🤖 AI-Powered Engines
+
+### **1. Mistral mathstral-7b (Math Reasoning)**
+Specialized mathematical reasoning model powering:
+- Problem classification and difficulty assessment
+- Step validation with error detection
+- Adaptive hint generation at 4 levels
+- Complete solution generation with LaTeX
+- Progress tracking and completion detection
+
+**Reasoning Coach Functions:**
+```python
+# Core functions
+classify_problem(problem_text) → {topic, difficulty, concepts}
+validate_step(problem, step_num, student_answer) → {correct, error_type}
+generate_adaptive_hint(problem, step, attempt, level) → {hint, guidance}
+generate_final_solution(problem, steps_history) → {steps, answer, concepts}
+detect_completion(problem, steps_history) → {complete, progress}
+```
+
+### **2. Whisper (Audio Transcription)**
+Speech-to-text for interview coaching:
+- Real-time audio capture and transcription
+- Multi-language support
+- Automatic fallback to text input
+- High accuracy transcription with noise filtering
+
+### **3. Mistral Large (Interview Coaching)**
+General-purpose AI engine for interview coaching:
+- Answer evaluation and scoring
+- Feedback generation
+- Weakness identification
+- Improvement suggestions
+- Report generation
+
+---
+
+## 📊 Data Flow
+
+### Interview Coaching Flow
+```
+1. User submits interview question → 2. AI evaluates answer
+3. Real-time feedback displayed → 4. Coaching tips provided
+5. Progress tracked → 6. Session saved
+```
+
+### Math Tutoring Flow
+```
+1. Problem input (text/photo/PDF) → 2. OCR extraction & parsing
+3. Problem classified → 4. Student submits step
+5. Step validated with error detection → 6. Adaptive hint provided
+7. Student revises → 8. Process repeats or solution revealed
+9. Complete solution with concepts → 10. Progress tracked
+```
+
+---
+
+## 🛠️ Technology Stack
+
+### Backend
+- **Framework**: FastAPI (Python 3.12)
+- **AI Models**: 
+  - Mistral mathstral-7b (Math Reasoning)
+  - Mistral Large 3 (Interview Coaching)
+  - Whisper (Audio Transcription)
+- **Server**: Uvicorn ASGI
+- **Deployment**: Docker on HuggingFace Spaces
+
+### Frontend  
+- **Framework**: React 18.2+
+- **Styling**: Custom CSS + KaTeX (Math Rendering)
+- **Audio**: Whisper Integration
+- **HTTP Client**: Axios with retry logic
+- **Build**: Create React App
+
+### Infrastructure
+- **Containerization**: Docker
+- **CI/CD**: GitHub Actions
+- **Deployment**: HuggingFace Spaces (serverless)
+- **Demo Mode**: Works without API keys (fallback responses)
+
+---
+
+## 🎯 Use Cases
+
+### For Students
+✅ **Interview Prep**: Practice tech interviews with AI feedback  
+✅ **Math Help**: Get hints, not just answers  
+✅ **Learning**: Understand where mistakes happen  
+✅ **Practice**: Unlimited problems with validation  
+
+### For Educators  
+✅ **Homework Support**: Students validate work before submission  
+✅ **Concept Focus**: Spend class time on deep understanding  
+✅ **Practice Assignment**: Scale student practice  
+✅ **Analytics**: Track which concepts students struggle with  
+
+### For Job Seekers
+✅ **Interview Practice**: Realistic technical interview simulation  
+✅ **Performance Feedback**: Know your strengths and weaknesses  
+✅ **Benchmarking**: Compare against industry standards  
+✅ **Progress Tracking**: Measure improvement over time  
+
+---
+
+## 🚀 Getting Started
+
+### Try It Live
+👉 [VoxaLab on HuggingFace Spaces](https://huggingface.co/spaces/mistral-hackaton-2026/voxalab)
+
+### Features You Can Try
+1. **Interview Coaching**: Select a question, answer in text or audio
+2. **Math Tutoring**: Submit a problem, get guided step-by-step
+3. **Reports**: View performance analytics
+4. **Multi-language**: Switch between English/French
+
+---
+
+## 🎓 The Problem We Solve
+
+**Challenge:**
+- Limited access to qualified tutors and interview coaches
+- Students need on-demand, 24/7 access to expert guidance
+- One-size-fits-all solutions don't adapt to individual needs
+- Cost barriers prevent many from accessing quality education
+
+**Solution:**
+- AI-powered coaching available anytime, anywhere
+- Adaptive guidance tailored to each student
+- Multi-modal learning (text, audio, visual)
+- Free or low-cost access to expert-level instruction
+
+---
+
+## ✨ Why VoxaLab is Different
+
+| Feature | Generic Tutoring Apps | VoxaLab |
+|---------|----------------------|---------|
+| Interview Practice | ❌ Limited questions | ✅ Unlimited + AI Feedback |
+| Math Hints | ❌ Generic or none | ✅ 4-Level Adaptive Hints |
+| Problem Input | ❌ Text only | ✅ Text/Photo/PDF/LaTeX |
+| Error Detection | ❌ Wrong/Right only | ✅ Identifies error type |
+| Feedback | ❌ Static | ✅ Personalized AI Analysis |
+| 24/7 Available | ❌ Limited hours | ✅ Always on |
+| Multi-Language | ❌ English only | ✅ English + French + more |
+| Cost | ❌ Subscription | ✅ Free/Low-cost |
+
+---
+
+
 
 ### 1. **Submit Any Math Problem - Any Way**
 
