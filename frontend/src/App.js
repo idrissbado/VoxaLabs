@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
-import { MathTutor } from './MathTutor';
+import { MathTutorSimple } from './MathTutorSimple';
 import {
   FiMic, FiStopCircle, FiPlay, FiPause, FiCheck,
   FiDownload, FiRefreshCw, FiVolume2, FiSettings,
@@ -961,7 +961,7 @@ function App() {
       )}
 
       {page === 'math' && (
-        <MathTutor onBack={() => setPage('landing')} />
+        <MathTutorSimple onBack={() => setPage('landing')} />
       )}
     </div>
   );
