@@ -12,14 +12,28 @@ from elevenlabs import play
 logger = logging.getLogger(__name__)
 
 class TTSService:
-    """Text-to-Speech service using ElevenLabs"""
+    """Text-to-Speech service using ElevenLabs - with lazy initialization"""
     
     def __init__(self):
-        """Initialize ElevenLabs client"""
+        """Initialize ElevenLabs client with lazy loading"""
+        self.client = None
+        self.available = False
+        self._initialized = False
+        
+    def _init_client(self):
+        """Lazy initialization of ElevenLabs client (called on first use)"""
+        if self._initialized:
+            return
+        
+        self._initialized = True
+        
         api_key = os.getenv("ELEVENLABS_API_KEY")
         if not api_key:
-            logger.warning("⚠️  ELEVENLABS_API_KEY not set - Coach voice feature will be unavailable")
-            logger.warning("📝 To enable: Set ELEVENLABS_API_KEY in environment variables")
+            logger.warning("⚠️  ELEVENLABS_API_KEY not found in environment variables")
+            logger.warning("📝 To enable voice synthesis on HF Spaces:")
+            logger.warning("   1. Go to HuggingFace Space Settings > Secrets")
+            logger.warning("   2. Add ELEVENLABS_API_KEY (get from https://elevenlabs.io/app/api-keys)")
+            logger.warning("   3. Restart the space")
             self.client = None
             self.available = False
             return
@@ -47,6 +61,9 @@ class TTSService:
         Returns:
             Audio bytes in MP3 format, or None if failed
         """
+        # Lazy initialization on first use
+        self._init_client()
+        
         if not self.client:
             logger.error("✗ ElevenLabs client not initialized - ELEVENLABS_API_KEY not set")
             return None
@@ -83,7 +100,7 @@ class TTSService:
             
             # Log specific error types
             if "401" in error_msg or "Unauthorized" in error_msg or "authentication" in error_msg.lower():
-                logger.error("✗ 401 UNAUTHORIZED: ELEVENLABS_API_KEY is invalid, expired, or not set correctly")
+                logger.error("✗ 401 UNAUTHORIZED: ELEVENLABS_API_KEY is invalid or expired")
                 logger.error("   Check: https://elevenlabs.io/app/api-keys")
             elif "429" in error_msg or "rate" in error_msg.lower():
                 logger.error("✗ 429 RATE LIMITED: Too many requests to ElevenLabs - please wait and try again")
@@ -96,6 +113,9 @@ class TTSService:
     
     async def get_available_voices(self):
         """Get list of available voices"""
+        # Lazy initialization on first use
+        self._init_client()
+        
         if not self.client or not self.available:
             return []
             
@@ -113,5 +133,5 @@ class TTSService:
             logger.error(f"Error fetching voices: {e}")
             return []
 
-# Initialize TTS service
+# Initialize TTS service (lazy loading - actual client init happens on first use)
 tts_service = TTSService()

@@ -25,15 +25,22 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 # Load environment variables from .env file (one directory up from backend)
+# This works for local development
 env_path = Path(__file__).parent / ".env"
 if env_path.exists():
     load_dotenv(env_path)
+    logger.info(f"✓ Loaded .env from {env_path}")
 else:
-    logger.warning(f"Warning: .env file not found at {env_path}")
+    # On HuggingFace Spaces, environment variables are set directly via Settings > Secrets
+    logger.info("ℹ️  .env file not found - using system environment variables (normal on HF Spaces)")
 
-# Verify keys are loaded
-logger.debug(f"MISTRAL_API_KEY set: {bool(os.getenv('MISTRAL_API_KEY'))}")
-logger.debug(f"ELEVENLABS_API_KEY set: {bool(os.getenv('ELEVENLABS_API_KEY'))}")
+# Verify keys are loaded (they may come from HF Spaces settings or .env)
+mistral_key = os.getenv('MISTRAL_API_KEY')
+elevenlabs_key = os.getenv('ELEVENLABS_API_KEY')
+
+logger.info(f"Environment Check:")
+logger.info(f"  MISTRAL_API_KEY: {'✓ Set' if mistral_key else '✗ Not set'}")
+logger.info(f"  ELEVENLABS_API_KEY: {'✓ Set' if elevenlabs_key else '✗ Not set (voice synthesis disabled)'}")
 
 # Import routers with error handling
 try:
